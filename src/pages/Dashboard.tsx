@@ -54,9 +54,20 @@ export default function Dashboard() {
         }
     };
 
+    // Sort projects by latest activity (last expense date or creation date)
+    const sortedProjects = [...projects].sort((a, b) => {
+        const getLatestActivity = (proj: Project) => {
+            const projectExpenses = expenses.filter(e => e.project_id === proj.id);
+            if (projectExpenses.length === 0) return new Date(proj.created_at).getTime();
+            const dates = projectExpenses.map(e => new Date(e.date).getTime());
+            return Math.max(...dates);
+        };
+        return getLatestActivity(b) - getLatestActivity(a);
+    });
+
     // Separate projects
-    const activeProjects = projects.filter(p => p.status !== 'completed');
-    const completedProjects = projects.filter(p => p.status === 'completed');
+    const activeProjects = sortedProjects.filter(p => p.status !== 'completed');
+    const completedProjects = sortedProjects.filter(p => p.status === 'completed');
     const totalExpenses = expenses.reduce((sum, e) => sum + e.amount, 0);
 
     return (
