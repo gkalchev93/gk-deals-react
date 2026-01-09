@@ -10,6 +10,7 @@ export interface Project {
     sold_price?: number;
     status?: 'active' | 'completed';
     buy_price?: number;
+    odometer?: number;
 }
 
 export interface Expense {

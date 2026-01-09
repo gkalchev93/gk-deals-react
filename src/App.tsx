@@ -7,6 +7,7 @@ import ProjectDetails from './pages/ProjectDetails';
 import Settings from './pages/Settings';
 import Login from './pages/Login';
 
+
 function App() {
   return (
     <AuthProvider>

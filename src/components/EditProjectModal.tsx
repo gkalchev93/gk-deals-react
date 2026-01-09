@@ -16,6 +16,7 @@ export default function EditProjectModal({ isOpen, project, onClose, onUpdated }
     const [description, setDescription] = useState(project.description || '');
     const [status, setStatus] = useState<'active' | 'completed'>(project.status || 'active');
     const [buyPrice, setBuyPrice] = useState(String(project.buy_price || 0));
+    const [odometer, setOdometer] = useState(String(project.odometer || 0));
     const [soldPrice, setSoldPrice] = useState(String(project.sold_price || 0));
     const [image, setImage] = useState<File | null>(null);
     const [loading, setLoading] = useState(false);
@@ -27,6 +28,7 @@ export default function EditProjectModal({ isOpen, project, onClose, onUpdated }
             setType(project.type);
             setDescription(project.description || '');
             setBuyPrice(String(project.buy_price || 0));
+            setOdometer(String(project.odometer || 0));
             setSoldPrice(String(project.sold_price || 0));
             setStatus(project.status || 'active');
         }
@@ -86,6 +88,7 @@ export default function EditProjectModal({ isOpen, project, onClose, onUpdated }
                     image_path: imagePath,
                     status: status,
                     buy_price: type === 'Car Rebuild' ? (parseFloat(buyPrice) || 0) : 0,
+                    odometer: type === 'Car Rebuild' ? (parseInt(odometer) || 0) : 0,
                     sold_price: parseFloat(soldPrice) || 0
                 })
                 .eq('id', project.id);
@@ -140,15 +143,27 @@ export default function EditProjectModal({ isOpen, project, onClose, onUpdated }
 
                     <div className="grid grid-cols-1 gap-4">
                         {type === 'Car Rebuild' && (
-                            <div>
-                                <label className="block text-xs uppercase text-gray-500 font-semibold mb-1">Buy Price (€)</label>
-                                <input
-                                    type="number"
-                                    value={buyPrice}
-                                    onChange={(e) => setBuyPrice(e.target.value)}
-                                    className="w-full bg-[#111] border border-gray-700 rounded-lg p-2.5 text-white focus:border-blue-500 focus:outline-none"
-                                    placeholder="0.00"
-                                />
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-xs uppercase text-gray-500 font-semibold mb-1">Buy Price (€)</label>
+                                    <input
+                                        type="number"
+                                        value={buyPrice}
+                                        onChange={(e) => setBuyPrice(e.target.value)}
+                                        className="w-full bg-[#111] border border-gray-700 rounded-lg p-2.5 text-white focus:border-blue-500 focus:outline-none"
+                                        placeholder="0.00"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-xs uppercase text-gray-500 font-semibold mb-1">Odometer (km)</label>
+                                    <input
+                                        type="number"
+                                        value={odometer}
+                                        onChange={(e) => setOdometer(e.target.value)}
+                                        className="w-full bg-[#111] border border-gray-700 rounded-lg p-2.5 text-white focus:border-blue-500 focus:outline-none"
+                                        placeholder="e.g. 150000"
+                                    />
+                                </div>
                             </div>
                         )}
                         <div>

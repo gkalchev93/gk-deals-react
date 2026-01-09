@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import type { Project, Expense } from '../types';
-import { ArrowLeft, TrendingUp, TrendingDown, DollarSign, Calendar, Tag, Plus } from 'lucide-react';
+import { ArrowLeft, TrendingUp, TrendingDown, DollarSign, Calendar, Tag, Plus, Gauge } from 'lucide-react';
 import AddExpenseModal from '../components/AddExpenseModal';
 
 export default function ProjectDetails() {
@@ -92,7 +92,15 @@ export default function ProjectDetails() {
                             <div className="flex justify-between items-start mb-4">
                                 <div>
                                     <h1 className="text-4xl font-bold mb-2">{project.name}</h1>
-                                    <p className="text-gray-400 italic">"{project.description || 'No description provided.'}"</p>
+                                    <p className="text-gray-400 italic mb-4">"{project.description || 'No description provided.'}"</p>
+                                    {project.type === 'Car Rebuild' && project.odometer !== undefined && (
+                                        <div className="flex items-center gap-2 text-gray-400 bg-gray-800/50 w-fit px-3 py-1.5 rounded-lg border border-gray-700/50">
+                                            <Gauge size={16} className="text-blue-400" />
+                                            <span className="text-sm font-bold tracking-wide">
+                                                {new Intl.NumberFormat('en-DE').format(project.odometer)} km
+                                            </span>
+                                        </div>
+                                    )}
                                 </div>
                                 <div className={`px-4 py-2 rounded-lg font-bold text-sm ${project.status === 'completed' ? 'bg-green-500/20 text-green-400 border border-green-500/30' : 'bg-blue-500/20 text-blue-400 border border-blue-500/30'}`}>
                                     {project.status?.toUpperCase() || 'ACTIVE'}
