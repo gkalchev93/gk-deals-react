@@ -231,33 +231,39 @@ export default function ProjectDetails() {
                                 <p className="text-[10px] mt-1 text-gray-500 uppercase font-bold">Buy Price + Expenses</p>
                             </div>
 
-                            <div className="p-4 bg-[#111] rounded-xl border border-gray-800">
-                                <span className="text-gray-500 text-xs uppercase font-bold block mb-1">Sold Price</span>
-                                <span className="text-2xl font-bold text-green-400">
-                                    {new Intl.NumberFormat('en-DE', { style: 'currency', currency: 'EUR' }).format(soldPrice)}
-                                </span>
-                            </div>
+                            {project.status === 'completed' && (
+                                <>
+                                    <div className="p-4 bg-[#111] rounded-xl border border-gray-800">
+                                        <span className="text-gray-500 text-xs uppercase font-bold block mb-1">Sold Price</span>
+                                        <span className="text-2xl font-bold text-green-400">
+                                            {new Intl.NumberFormat('en-DE', { style: 'currency', currency: 'EUR' }).format(soldPrice)}
+                                        </span>
+                                    </div>
 
-                            <div className={`p-6 rounded-xl border ${isProfitable ? 'bg-green-500/10 border-green-500/30' : 'bg-red-500/10 border-red-500/30'}`}>
-                                <div className="flex items-center justify-between mb-2">
-                                    <span className="text-xs uppercase font-bold opacity-60">Estimated Profit</span>
-                                    {isProfitable ? <TrendingUp size={16} className="text-green-400" /> : <TrendingDown size={16} className="text-red-400" />}
+                                    <div className={`p-6 rounded-xl border ${isProfitable ? 'bg-green-500/10 border-green-500/30' : 'bg-red-500/10 border-red-500/30'}`}>
+                                        <div className="flex items-center justify-between mb-2">
+                                            <span className="text-xs uppercase font-bold opacity-60">Final Profit</span>
+                                            {isProfitable ? <TrendingUp size={16} className="text-green-400" /> : <TrendingDown size={16} className="text-red-400" />}
+                                        </div>
+                                        <span className={`text-3xl font-bold ${isProfitable ? 'text-green-400' : 'text-red-400'}`}>
+                                            {new Intl.NumberFormat('en-DE', { style: 'currency', currency: 'EUR' }).format(profit)}
+                                        </span>
+                                        <p className="text-[10px] mt-2 opacity-50 uppercase font-bold">
+                                            {isProfitable ? 'Ready for next deal!' : 'Under budget target'}
+                                        </p>
+                                    </div>
+                                </>
+                            )}
+                        </div>
+
+                        {project.status === 'completed' && (
+                            <div className="mt-8 pt-6 border-t border-gray-800">
+                                <div className="flex items-center gap-3 text-sm text-gray-400">
+                                    <DollarSign size={16} className="text-yellow-500" />
+                                    <span>ROI: {totalSpent > 0 ? ((profit / totalSpent) * 100).toFixed(1) : 0}%</span>
                                 </div>
-                                <span className={`text-3xl font-bold ${isProfitable ? 'text-green-400' : 'text-red-400'}`}>
-                                    {new Intl.NumberFormat('en-DE', { style: 'currency', currency: 'EUR' }).format(profit)}
-                                </span>
-                                <p className="text-[10px] mt-2 opacity-50 uppercase font-bold">
-                                    {isProfitable ? 'Ready for next deal!' : 'Under budget target'}
-                                </p>
                             </div>
-                        </div>
-
-                        <div className="mt-8 pt-6 border-t border-gray-800">
-                            <div className="flex items-center gap-3 text-sm text-gray-400">
-                                <DollarSign size={16} className="text-yellow-500" />
-                                <span>ROI: {totalSpent > 0 ? ((profit / totalSpent) * 100).toFixed(1) : 0}%</span>
-                            </div>
-                        </div>
+                        )}
                     </div>
                 </div>
             </div>
