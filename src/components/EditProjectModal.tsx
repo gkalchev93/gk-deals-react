@@ -18,6 +18,7 @@ export default function EditProjectModal({ isOpen, project, onClose, onUpdated }
     const [buyPrice, setBuyPrice] = useState(String(project.buy_price || 0));
     const [odometer, setOdometer] = useState(String(project.odometer || 0));
     const [odometerEnd, setOdometerEnd] = useState(String(project.odometer_end || 0));
+    const [vin, setVin] = useState(project.vin || '');
     const [soldPrice, setSoldPrice] = useState(String(project.sold_price || 0));
     const [image, setImage] = useState<File | null>(null);
     const [loading, setLoading] = useState(false);
@@ -31,6 +32,7 @@ export default function EditProjectModal({ isOpen, project, onClose, onUpdated }
             setBuyPrice(String(project.buy_price || 0));
             setOdometer(String(project.odometer || 0));
             setOdometerEnd(String(project.odometer_end || 0));
+            setVin(project.vin || '');
             setSoldPrice(String(project.sold_price || 0));
             setStatus(project.status || 'active');
         }
@@ -92,6 +94,7 @@ export default function EditProjectModal({ isOpen, project, onClose, onUpdated }
                     buy_price: type === 'Car Rebuild' ? (parseFloat(buyPrice) || 0) : 0,
                     odometer: type === 'Car Rebuild' ? (parseInt(odometer) || 0) : 0,
                     odometer_end: type === 'Car Rebuild' && status === 'completed' ? (parseInt(odometerEnd) || 0) : 0,
+                    vin: type === 'Car Rebuild' ? vin : '',
                     sold_price: parseFloat(soldPrice) || 0
                 })
                 .eq('id', project.id);
@@ -169,12 +172,24 @@ export default function EditProjectModal({ isOpen, project, onClose, onUpdated }
                                 </div>
                             </div>
                         )}
+                        {type === 'Car Rebuild' && (
+                            <div>
+                                <label className="block text-xs uppercase text-gray-500 font-semibold mb-1">VIN Number</label>
+                                <input
+                                    type="text"
+                                    value={vin}
+                                    onChange={(e) => setVin(e.target.value.toUpperCase())}
+                                    className="w-full bg-[#111] border border-gray-700 rounded-lg p-2.5 text-white focus:border-blue-500 focus:outline-none font-mono"
+                                    placeholder="VIN..."
+                                />
+                            </div>
+                        )}
                         <div>
                             <label className="block text-xs uppercase text-gray-500 font-semibold mb-1">Description</label>
                             <textarea
                                 value={description}
                                 onChange={(e) => setDescription(e.target.value)}
-                                className="w-full bg-[#111] border border-gray-700 rounded-lg p-2.5 text-white focus:border-blue-500 focus:outline-none h-10"
+                                className="w-full bg-[#111] border border-gray-700 rounded-lg p-2.5 text-white focus:border-blue-500 focus:outline-none h-32"
                                 placeholder="..."
                             />
                         </div>

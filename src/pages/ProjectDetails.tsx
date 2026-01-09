@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import type { Project, Expense } from '../types';
-import { ArrowLeft, TrendingUp, TrendingDown, DollarSign, Calendar, Tag, Plus, Gauge } from 'lucide-react';
+import { ArrowLeft, TrendingUp, TrendingDown, DollarSign, Calendar, Tag, Plus, Gauge, Hash } from 'lucide-react';
 import AddExpenseModal from '../components/AddExpenseModal';
 
 export default function ProjectDetails() {
@@ -119,6 +119,14 @@ export default function ProjectDetails() {
                                                     )}
                                                 </>
                                             )}
+                                        </div>
+                                    )}
+                                    {project.type === 'Car Rebuild' && project.vin && (
+                                        <div className="flex items-center gap-2 text-gray-400 bg-gray-800/50 w-fit px-3 py-1.5 rounded-lg border border-gray-700/50 mt-3 font-mono">
+                                            <Hash size={14} className="text-blue-400" />
+                                            <span className="text-xs font-bold tracking-widest">
+                                                {project.vin}
+                                            </span>
                                         </div>
                                     )}
                                 </div>

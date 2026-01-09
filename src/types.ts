@@ -12,6 +12,7 @@ export interface Project {
     buy_price?: number;
     odometer?: number;
     odometer_end?: number;
+    vin?: string;
 }
 
 export interface Expense {
