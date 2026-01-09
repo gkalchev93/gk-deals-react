@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import type { Project, Expense } from '../types';
-import { ArrowLeft, TrendingUp, TrendingDown, DollarSign, Calendar, Tag, Plus, Gauge, Hash } from 'lucide-react';
+import { ArrowLeft, TrendingUp, TrendingDown, DollarSign, Calendar, Tag, Plus, Gauge, Hash, Copy, Check } from 'lucide-react';
 import AddExpenseModal from '../components/AddExpenseModal';
 
 export default function ProjectDetails() {
@@ -12,6 +12,7 @@ export default function ProjectDetails() {
     const [expenses, setExpenses] = useState<Expense[]>([]);
     const [loading, setLoading] = useState(true);
     const [isAddExpenseOpen, setIsAddExpenseOpen] = useState(false);
+    const [copiedVin, setCopiedVin] = useState(false);
 
     useEffect(() => {
         if (id) {
@@ -92,6 +93,30 @@ export default function ProjectDetails() {
                             <div className="flex justify-between items-start mb-4">
                                 <div>
                                     <h1 className="text-4xl font-bold mb-2">{project.name}</h1>
+
+                                    {/* VIN Number moved below title */}
+                                    {project.type === 'Car Rebuild' && project.vin && (
+                                        <div className="flex items-center gap-2 mb-4">
+                                            <div className="flex items-center gap-2 text-gray-400 bg-gray-800/50 w-fit px-3 py-1.5 rounded-lg border border-gray-700/50 font-mono">
+                                                <Hash size={14} className="text-blue-400" />
+                                                <span className="text-xs font-bold tracking-widest">
+                                                    {project.vin}
+                                                </span>
+                                            </div>
+                                            <button
+                                                onClick={() => {
+                                                    navigator.clipboard.writeText(project.vin || '');
+                                                    setCopiedVin(true);
+                                                    setTimeout(() => setCopiedVin(false), 2000);
+                                                }}
+                                                className="p-1.5 hover:bg-gray-800 rounded-lg transition-colors text-gray-500 hover:text-blue-400"
+                                                title="Copy VIN"
+                                            >
+                                                {copiedVin ? <Check size={16} className="text-green-500" /> : <Copy size={16} />}
+                                            </button>
+                                        </div>
+                                    )}
+
                                     <p className="text-gray-400 italic mb-4">"{project.description || 'No description provided.'}"</p>
                                     {project.type === 'Car Rebuild' && project.odometer !== undefined && (
                                         <div className="flex flex-wrap gap-3">
@@ -121,14 +146,7 @@ export default function ProjectDetails() {
                                             )}
                                         </div>
                                     )}
-                                    {project.type === 'Car Rebuild' && project.vin && (
-                                        <div className="flex items-center gap-2 text-gray-400 bg-gray-800/50 w-fit px-3 py-1.5 rounded-lg border border-gray-700/50 mt-3 font-mono">
-                                            <Hash size={14} className="text-blue-400" />
-                                            <span className="text-xs font-bold tracking-widest">
-                                                {project.vin}
-                                            </span>
-                                        </div>
-                                    )}
+                                    {/* Old VIN location removed */}
                                 </div>
                                 <div className={`px-4 py-2 rounded-lg font-bold text-sm ${project.status === 'completed' ? 'bg-green-500/20 text-green-400 border border-green-500/30' : 'bg-blue-500/20 text-blue-400 border border-blue-500/30'}`}>
                                     {project.status?.toUpperCase() || 'ACTIVE'}
