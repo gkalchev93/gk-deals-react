@@ -15,6 +15,7 @@ export default function EditProjectModal({ isOpen, project, onClose, onUpdated }
     const [type, setType] = useState(project.type);
     const [description, setDescription] = useState(project.description || '');
     const [status, setStatus] = useState<'active' | 'completed'>(project.status || 'active');
+    const [buyPrice, setBuyPrice] = useState(String(project.buy_price || 0));
     const [soldPrice, setSoldPrice] = useState(String(project.sold_price || 0));
     const [image, setImage] = useState<File | null>(null);
     const [loading, setLoading] = useState(false);
@@ -25,6 +26,9 @@ export default function EditProjectModal({ isOpen, project, onClose, onUpdated }
             setName(project.name);
             setType(project.type);
             setDescription(project.description || '');
+            setBuyPrice(String(project.buy_price || 0));
+            setSoldPrice(String(project.sold_price || 0));
+            setStatus(project.status || 'active');
         }
     }, [project]);
 
@@ -81,6 +85,7 @@ export default function EditProjectModal({ isOpen, project, onClose, onUpdated }
                     description,
                     image_path: imagePath,
                     status: status,
+                    buy_price: parseFloat(buyPrice) || 0,
                     sold_price: parseFloat(soldPrice) || 0
                 })
                 .eq('id', project.id);
@@ -130,19 +135,29 @@ export default function EditProjectModal({ isOpen, project, onClose, onUpdated }
                         >
                             <option>Car Rebuild</option>
                             <option>PC Build</option>
-                            <option>Home Renovation</option>
-                            <option>Other</option>
                         </select>
                     </div>
 
-                    <div>
-                        <label className="block text-xs uppercase text-gray-500 font-semibold mb-1">Description</label>
-                        <textarea
-                            value={description}
-                            onChange={(e) => setDescription(e.target.value)}
-                            className="w-full bg-[#111] border border-gray-700 rounded-lg p-2.5 text-white focus:border-blue-500 focus:outline-none h-24"
-                            placeholder="Project goals..."
-                        />
+                    <div className="grid grid-cols-2 gap-4">
+                        <div>
+                            <label className="block text-xs uppercase text-gray-500 font-semibold mb-1">Buy Price (€)</label>
+                            <input
+                                type="number"
+                                value={buyPrice}
+                                onChange={(e) => setBuyPrice(e.target.value)}
+                                className="w-full bg-[#111] border border-gray-700 rounded-lg p-2.5 text-white focus:border-blue-500 focus:outline-none"
+                                placeholder="0.00"
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-xs uppercase text-gray-500 font-semibold mb-1">Description</label>
+                            <textarea
+                                value={description}
+                                onChange={(e) => setDescription(e.target.value)}
+                                className="w-full bg-[#111] border border-gray-700 rounded-lg p-2.5 text-white focus:border-blue-500 focus:outline-none h-10"
+                                placeholder="..."
+                            />
+                        </div>
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">

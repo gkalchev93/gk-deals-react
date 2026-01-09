@@ -57,7 +57,9 @@ export default function ProjectDetails() {
 
     if (!project) return null;
 
-    const totalSpent = expenses.reduce((sum, e) => sum + e.amount, 0);
+    const expenseTotal = expenses.reduce((sum, e) => sum + e.amount, 0);
+    const buyPrice = project.buy_price || 0;
+    const totalSpent = buyPrice + expenseTotal;
     const soldPrice = project.sold_price || 0;
     const profit = soldPrice - totalSpent;
     const isProfitable = profit >= 0;
@@ -154,10 +156,18 @@ export default function ProjectDetails() {
 
                         <div className="space-y-4">
                             <div className="p-4 bg-[#111] rounded-xl border border-gray-800">
-                                <span className="text-gray-500 text-xs uppercase font-bold block mb-1">Total Investment</span>
+                                <span className="text-gray-500 text-xs uppercase font-bold block mb-1">Buy Price</span>
                                 <span className="text-2xl font-bold text-white">
+                                    {new Intl.NumberFormat('en-DE', { style: 'currency', currency: 'EUR' }).format(buyPrice)}
+                                </span>
+                            </div>
+
+                            <div className="p-4 bg-[#111] rounded-xl border border-gray-800">
+                                <span className="text-gray-500 text-xs uppercase font-bold block mb-1">Total Investment</span>
+                                <span className="text-2xl font-bold text-blue-400">
                                     {new Intl.NumberFormat('en-DE', { style: 'currency', currency: 'EUR' }).format(totalSpent)}
                                 </span>
+                                <p className="text-[10px] mt-1 text-gray-500 uppercase font-bold">Buy Price + Expenses</p>
                             </div>
 
                             <div className="p-4 bg-[#111] rounded-xl border border-gray-800">

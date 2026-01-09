@@ -11,8 +11,8 @@ interface ProjectCardProps {
 export default function ProjectCard({ project, expenses, onAddExpense }: ProjectCardProps) {
     const navigate = useNavigate();
 
-    // Calculate total spent
-    const totalSpent = expenses.reduce((sum, expense) => sum + (expense.amount || 0), 0);
+    // Calculate total spent (buy price + expenses)
+    const totalSpent = (project.buy_price || 0) + expenses.reduce((sum, expense) => sum + (expense.amount || 0), 0);
 
     // Format currency (Euro)
     const formattedTotal = new Intl.NumberFormat('en-DE', { style: 'currency', currency: 'EUR' }).format(totalSpent);

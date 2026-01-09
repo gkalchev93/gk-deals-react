@@ -9,6 +9,7 @@ export interface Project {
     user_id?: string;
     sold_price?: number;
     status?: 'active' | 'completed';
+    buy_price?: number;
 }
 
 export interface Expense {

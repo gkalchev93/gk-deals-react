@@ -13,6 +13,7 @@ export default function CreateProjectModal({ isOpen, onClose, onCreated }: Creat
     const [type, setType] = useState('Car Rebuild');
     const [description, setDescription] = useState('');
     const [status, setStatus] = useState<'active' | 'completed'>('active');
+    const [buyPrice, setBuyPrice] = useState('0');
     const [soldPrice, setSoldPrice] = useState('0');
     const [image, setImage] = useState<File | null>(null);
     const [loading, setLoading] = useState(false);
@@ -63,6 +64,7 @@ export default function CreateProjectModal({ isOpen, onClose, onCreated }: Creat
                         is_deleted: false,
                         user_id: user.id,
                         status: status,
+                        buy_price: parseFloat(buyPrice) || 0,
                         sold_price: parseFloat(soldPrice) || 0
                     }
                 ]);
@@ -116,9 +118,18 @@ export default function CreateProjectModal({ isOpen, onClose, onCreated }: Creat
                         >
                             <option>Car Rebuild</option>
                             <option>PC Build</option>
-                            <option>Home Renovation</option>
-                            <option>Other</option>
                         </select>
+                    </div>
+
+                    <div>
+                        <label className="block text-xs uppercase text-gray-500 font-semibold mb-1">Buy Price (€)</label>
+                        <input
+                            type="number"
+                            value={buyPrice}
+                            onChange={(e) => setBuyPrice(e.target.value)}
+                            className="w-full bg-[#111] border border-gray-700 rounded-lg p-2.5 text-white focus:border-blue-500 focus:outline-none"
+                            placeholder="0.00"
+                        />
                     </div>
 
                     <div>
