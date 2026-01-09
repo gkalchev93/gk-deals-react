@@ -85,7 +85,7 @@ export default function EditProjectModal({ isOpen, project, onClose, onUpdated }
                     description,
                     image_path: imagePath,
                     status: status,
-                    buy_price: parseFloat(buyPrice) || 0,
+                    buy_price: type === 'Car Rebuild' ? (parseFloat(buyPrice) || 0) : 0,
                     sold_price: parseFloat(soldPrice) || 0
                 })
                 .eq('id', project.id);
@@ -138,17 +138,19 @@ export default function EditProjectModal({ isOpen, project, onClose, onUpdated }
                         </select>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4">
-                        <div>
-                            <label className="block text-xs uppercase text-gray-500 font-semibold mb-1">Buy Price (€)</label>
-                            <input
-                                type="number"
-                                value={buyPrice}
-                                onChange={(e) => setBuyPrice(e.target.value)}
-                                className="w-full bg-[#111] border border-gray-700 rounded-lg p-2.5 text-white focus:border-blue-500 focus:outline-none"
-                                placeholder="0.00"
-                            />
-                        </div>
+                    <div className="grid grid-cols-1 gap-4">
+                        {type === 'Car Rebuild' && (
+                            <div>
+                                <label className="block text-xs uppercase text-gray-500 font-semibold mb-1">Buy Price (€)</label>
+                                <input
+                                    type="number"
+                                    value={buyPrice}
+                                    onChange={(e) => setBuyPrice(e.target.value)}
+                                    className="w-full bg-[#111] border border-gray-700 rounded-lg p-2.5 text-white focus:border-blue-500 focus:outline-none"
+                                    placeholder="0.00"
+                                />
+                            </div>
+                        )}
                         <div>
                             <label className="block text-xs uppercase text-gray-500 font-semibold mb-1">Description</label>
                             <textarea
