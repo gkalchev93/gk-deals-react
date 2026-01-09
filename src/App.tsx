@@ -3,6 +3,7 @@ import { AuthProvider } from './contexts/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import Layout from './components/Layout';
 import Dashboard from './pages/Dashboard';
+import ProjectDetails from './pages/ProjectDetails';
 import Settings from './pages/Settings';
 import Login from './pages/Login';
 
@@ -15,6 +16,7 @@ function App() {
         <Route element={<ProtectedRoute />}>
           <Route element={<Layout />}>
             <Route path="/" element={<Dashboard />} />
+            <Route path="/project/:id" element={<ProjectDetails />} />
             <Route path="/settings" element={<Settings />} />
           </Route>
         </Route>

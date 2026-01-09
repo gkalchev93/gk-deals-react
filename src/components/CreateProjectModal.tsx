@@ -12,6 +12,8 @@ export default function CreateProjectModal({ isOpen, onClose, onCreated }: Creat
     const [name, setName] = useState('');
     const [type, setType] = useState('Car Rebuild');
     const [description, setDescription] = useState('');
+    const [status, setStatus] = useState<'active' | 'completed'>('active');
+    const [soldPrice, setSoldPrice] = useState('0');
     const [image, setImage] = useState<File | null>(null);
     const [loading, setLoading] = useState(false);
 
@@ -59,7 +61,9 @@ export default function CreateProjectModal({ isOpen, onClose, onCreated }: Creat
                         description,
                         image_path: imagePath,
                         is_deleted: false,
-                        user_id: user.id
+                        user_id: user.id,
+                        status: status,
+                        sold_price: parseFloat(soldPrice) || 0
                     }
                 ]);
 
@@ -125,6 +129,30 @@ export default function CreateProjectModal({ isOpen, onClose, onCreated }: Creat
                             className="w-full bg-[#111] border border-gray-700 rounded-lg p-2.5 text-white focus:border-blue-500 focus:outline-none h-24"
                             placeholder="Project goals..."
                         />
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                        <div>
+                            <label className="block text-xs uppercase text-gray-500 font-semibold mb-1">Status</label>
+                            <select
+                                value={status}
+                                onChange={(e) => setStatus(e.target.value as 'active' | 'completed')}
+                                className="w-full bg-[#111] border border-gray-700 rounded-lg p-2.5 text-white focus:border-blue-500 focus:outline-none"
+                            >
+                                <option value="active">Active</option>
+                                <option value="completed">Completed</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label className="block text-xs uppercase text-gray-500 font-semibold mb-1">Sold Price (€)</label>
+                            <input
+                                type="number"
+                                value={soldPrice}
+                                onChange={(e) => setSoldPrice(e.target.value)}
+                                className="w-full bg-[#111] border border-gray-700 rounded-lg p-2.5 text-white focus:border-blue-500 focus:outline-none"
+                                placeholder="0.00"
+                            />
+                        </div>
                     </div>
 
                     <div>

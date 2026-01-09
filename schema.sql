@@ -7,7 +7,9 @@ create table public.project (
   description text,
   image_path text,
   is_deleted boolean default false,
-  user_id uuid references auth.users not null default auth.uid()
+  user_id uuid references auth.users not null default auth.uid(),
+  sold_price double precision default 0,
+  status text default 'active' -- 'active' or 'completed'
 );
 
 -- Create Expense Table

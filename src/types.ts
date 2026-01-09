@@ -7,6 +7,8 @@ export interface Project {
     is_deleted?: boolean;
     created_at: string;
     user_id?: string;
+    sold_price?: number;
+    status?: 'active' | 'completed';
 }
 
 export interface Expense {
