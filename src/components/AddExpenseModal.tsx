@@ -14,7 +14,7 @@ export default function AddExpenseModal({ isOpen, onClose, onAdded, projectId, p
     const [description, setDescription] = useState('');
     const [amount, setAmount] = useState('');
     const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
-    const [category, setCategory] = useState('Parts');
+    const [category, setCategory] = useState('Service');
     const [loading, setLoading] = useState(false);
 
     if (!isOpen) return null;
@@ -43,7 +43,7 @@ export default function AddExpenseModal({ isOpen, onClose, onAdded, projectId, p
             // Reset form
             setDescription('');
             setAmount('');
-            setCategory('Parts');
+            setCategory('Service');
             setDate(new Date().toISOString().split('T')[0]);
 
         } catch (error) {
@@ -101,11 +101,10 @@ export default function AddExpenseModal({ isOpen, onClose, onAdded, projectId, p
                                 onChange={(e) => setCategory(e.target.value)}
                                 className="w-full bg-[#111] border border-gray-700 rounded-lg p-2.5 text-white focus:border-blue-500 focus:outline-none"
                             >
-                                <option>Parts</option>
-                                <option>Labor</option>
-                                <option>Tools</option>
-                                <option>Paint/Body</option>
-                                <option>Administrative</option>
+                                <option>Service</option>
+                                <option>Repair</option>
+                                <option>Buying</option>
+                                <option>Tuning</option>
                             </select>
                         </div>
                         <div>
