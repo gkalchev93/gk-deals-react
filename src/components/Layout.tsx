@@ -32,7 +32,8 @@ export default function Layout() {
             {/* Mobile Header */}
             <header className="lg:hidden fixed top-0 left-0 right-0 h-16 bg-[#1a1a1a] border-b border-gray-800 flex items-center justify-between px-6 z-40">
                 <h1 className="text-xl font-bold flex items-center gap-2">
-                    🏷️ <span className="text-blue-400">GK Deal$</span>
+                    <img src="./pwa-192x192.png" alt="Logo" className="w-8 h-8 rounded-lg shadow-lg shadow-blue-500/20" />
+                    <span className="text-blue-400">GK Deal$</span>
                 </h1>
                 <button onClick={toggleMenu} className="p-2 text-gray-400 hover:text-white transition-colors">
                     {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
@@ -55,7 +56,8 @@ export default function Layout() {
             `}>
                 <div className="p-6 border-b border-gray-800 hidden lg:block">
                     <h1 className="text-xl font-bold flex items-center gap-2">
-                        🏷️ <span className="text-blue-400">GK Deal$</span>
+                        <img src="./pwa-192x192.png" alt="Logo" className="w-8 h-8 rounded-lg shadow-lg shadow-blue-500/20" />
+                        <span className="text-blue-400">GK Deal$</span>
                     </h1>
                 </div>
 
