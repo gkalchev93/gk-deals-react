@@ -94,11 +94,31 @@ export default function ProjectDetails() {
                                     <h1 className="text-4xl font-bold mb-2">{project.name}</h1>
                                     <p className="text-gray-400 italic mb-4">"{project.description || 'No description provided.'}"</p>
                                     {project.type === 'Car Rebuild' && project.odometer !== undefined && (
-                                        <div className="flex items-center gap-2 text-gray-400 bg-gray-800/50 w-fit px-3 py-1.5 rounded-lg border border-gray-700/50">
-                                            <Gauge size={16} className="text-blue-400" />
-                                            <span className="text-sm font-bold tracking-wide">
-                                                {new Intl.NumberFormat('en-DE').format(project.odometer)} km
-                                            </span>
+                                        <div className="flex flex-wrap gap-3">
+                                            <div className="flex items-center gap-2 text-gray-400 bg-gray-800/50 w-fit px-3 py-1.5 rounded-lg border border-gray-700/50">
+                                                <Gauge size={16} className="text-blue-400" />
+                                                <span className="text-sm font-bold tracking-wide">
+                                                    Start: {new Intl.NumberFormat('en-DE').format(project.odometer)} km
+                                                </span>
+                                            </div>
+                                            {project.status === 'completed' && project.odometer_end && (
+                                                <>
+                                                    <div className="flex items-center gap-2 text-gray-400 bg-gray-800/50 w-fit px-3 py-1.5 rounded-lg border border-gray-700/50">
+                                                        <Gauge size={16} className="text-green-400" />
+                                                        <span className="text-sm font-bold tracking-wide">
+                                                            End: {new Intl.NumberFormat('en-DE').format(project.odometer_end)} km
+                                                        </span>
+                                                    </div>
+                                                    {project.odometer_end > project.odometer && (
+                                                        <div className="flex items-center gap-2 text-green-400 bg-green-500/10 w-fit px-3 py-1.5 rounded-lg border border-green-500/20">
+                                                            <TrendingUp size={16} />
+                                                            <span className="text-sm font-bold tracking-wide">
+                                                                Total: {new Intl.NumberFormat('en-DE').format(project.odometer_end - project.odometer)} km driven
+                                                            </span>
+                                                        </div>
+                                                    )}
+                                                </>
+                                            )}
                                         </div>
                                     )}
                                 </div>

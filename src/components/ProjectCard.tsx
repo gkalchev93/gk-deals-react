@@ -60,6 +60,11 @@ export default function ProjectCard({ project, expenses, onAddExpense }: Project
                                     </span>
                                     <BarChart3 size={14} className="text-green-900/40" />
                                 </div>
+                                {project.type === 'Car Rebuild' && project.odometer_end && project.odometer && project.odometer_end > project.odometer && (
+                                    <span className="text-[10px] text-gray-500 font-bold block mt-0.5">
+                                        🏁 {project.odometer_end - project.odometer} KM DRIVEN
+                                    </span>
+                                )}
                             </>
                         ) : (
                             <>

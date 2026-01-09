@@ -17,6 +17,7 @@ export default function EditProjectModal({ isOpen, project, onClose, onUpdated }
     const [status, setStatus] = useState<'active' | 'completed'>(project.status || 'active');
     const [buyPrice, setBuyPrice] = useState(String(project.buy_price || 0));
     const [odometer, setOdometer] = useState(String(project.odometer || 0));
+    const [odometerEnd, setOdometerEnd] = useState(String(project.odometer_end || 0));
     const [soldPrice, setSoldPrice] = useState(String(project.sold_price || 0));
     const [image, setImage] = useState<File | null>(null);
     const [loading, setLoading] = useState(false);
@@ -29,6 +30,7 @@ export default function EditProjectModal({ isOpen, project, onClose, onUpdated }
             setDescription(project.description || '');
             setBuyPrice(String(project.buy_price || 0));
             setOdometer(String(project.odometer || 0));
+            setOdometerEnd(String(project.odometer_end || 0));
             setSoldPrice(String(project.sold_price || 0));
             setStatus(project.status || 'active');
         }
@@ -89,6 +91,7 @@ export default function EditProjectModal({ isOpen, project, onClose, onUpdated }
                     status: status,
                     buy_price: type === 'Car Rebuild' ? (parseFloat(buyPrice) || 0) : 0,
                     odometer: type === 'Car Rebuild' ? (parseInt(odometer) || 0) : 0,
+                    odometer_end: type === 'Car Rebuild' && status === 'completed' ? (parseInt(odometerEnd) || 0) : 0,
                     sold_price: parseFloat(soldPrice) || 0
                 })
                 .eq('id', project.id);
@@ -200,6 +203,19 @@ export default function EditProjectModal({ isOpen, project, onClose, onUpdated }
                             />
                         </div>
                     </div>
+
+                    {type === 'Car Rebuild' && status === 'completed' && (
+                        <div>
+                            <label className="block text-xs uppercase text-gray-500 font-semibold mb-1 text-green-500">End Odometer (km)</label>
+                            <input
+                                type="number"
+                                value={odometerEnd}
+                                onChange={(e) => setOdometerEnd(e.target.value)}
+                                className="w-full bg-[#111] border border-green-900/50 rounded-lg p-2.5 text-white focus:border-green-500 focus:outline-none"
+                                placeholder="Final mileage..."
+                            />
+                        </div>
+                    )}
 
                     <div>
                         <label className="block text-xs uppercase text-gray-500 font-semibold mb-1">Cover Image</label>

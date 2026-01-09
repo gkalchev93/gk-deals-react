@@ -11,6 +11,7 @@ export interface Project {
     status?: 'active' | 'completed';
     buy_price?: number;
     odometer?: number;
+    odometer_end?: number;
 }
 
 export interface Expense {
