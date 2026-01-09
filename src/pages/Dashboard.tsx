@@ -68,7 +68,11 @@ export default function Dashboard() {
     // Separate projects
     const activeProjects = sortedProjects.filter(p => p.status !== 'completed');
     const completedProjects = sortedProjects.filter(p => p.status === 'completed');
-    const totalExpenses = expenses.reduce((sum, e) => sum + e.amount, 0);
+
+    // Total Portfolio = Sum of all Buy Prices + Sum of all Expenses
+    const totalBuyPrice = projects.reduce((sum, p) => sum + (p.buy_price || 0), 0);
+    const totalExpenseAmount = expenses.reduce((sum, e) => sum + e.amount, 0);
+    const totalPortfolioValue = totalBuyPrice + totalExpenseAmount;
 
     return (
         <div className="p-4 md:p-8">
@@ -83,9 +87,9 @@ export default function Dashboard() {
                         <span className="font-bold text-xl text-blue-400">{activeProjects.length}</span>
                     </div>
                     <div className="bg-[#1a1a1a] flex-1 md:flex-none px-4 py-2 rounded-lg border border-gray-800">
-                        <span className="text-gray-500 text-xs block">Total Portfolio</span>
+                        <span className="text-gray-500 text-xs block">Total Investment</span>
                         <span className="font-bold text-xl text-green-400">
-                            {new Intl.NumberFormat('en-DE', { style: 'currency', currency: 'EUR' }).format(totalExpenses)}
+                            {new Intl.NumberFormat('en-DE', { style: 'currency', currency: 'EUR' }).format(totalPortfolioValue)}
                         </span>
                     </div>
                 </div>

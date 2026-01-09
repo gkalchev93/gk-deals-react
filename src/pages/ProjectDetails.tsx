@@ -93,13 +93,14 @@ export default function ProjectDetails() {
                             <div className="flex justify-between items-start mb-4">
                                 <div>
                                     <h1 className="text-4xl font-bold mb-2">{project.name}</h1>
+                                    <p className="text-gray-400 italic mb-4">"{project.description || 'No description provided.'}"</p>
 
-                                    {/* VIN Number moved below title */}
+                                    {/* VIN Number moved below description and enlarged */}
                                     {project.type === 'Car Rebuild' && project.vin && (
-                                        <div className="flex items-center gap-2 mb-4">
-                                            <div className="flex items-center gap-2 text-gray-400 bg-gray-800/50 w-fit px-3 py-1.5 rounded-lg border border-gray-700/50 font-mono">
-                                                <Hash size={14} className="text-blue-400" />
-                                                <span className="text-xs font-bold tracking-widest">
+                                        <div className="flex items-center gap-2 mb-6">
+                                            <div className="flex items-center gap-3 text-gray-300 bg-gray-800 px-4 py-2 rounded-xl border border-gray-700 font-mono shadow-inner">
+                                                <Hash size={18} className="text-blue-400" />
+                                                <span className="text-base font-bold tracking-widest">
                                                     {project.vin}
                                                 </span>
                                             </div>
@@ -109,15 +110,13 @@ export default function ProjectDetails() {
                                                     setCopiedVin(true);
                                                     setTimeout(() => setCopiedVin(false), 2000);
                                                 }}
-                                                className="p-1.5 hover:bg-gray-800 rounded-lg transition-colors text-gray-500 hover:text-blue-400"
+                                                className="p-2 hover:bg-gray-800 rounded-xl transition-colors text-gray-500 hover:text-blue-400 border border-transparent hover:border-gray-700"
                                                 title="Copy VIN"
                                             >
-                                                {copiedVin ? <Check size={16} className="text-green-500" /> : <Copy size={16} />}
+                                                {copiedVin ? <Check size={20} className="text-green-500" /> : <Copy size={20} />}
                                             </button>
                                         </div>
                                     )}
-
-                                    <p className="text-gray-400 italic mb-4">"{project.description || 'No description provided.'}"</p>
                                     {project.type === 'Car Rebuild' && project.odometer !== undefined && (
                                         <div className="flex flex-wrap gap-3">
                                             <div className="flex items-center gap-2 text-gray-400 bg-gray-800/50 w-fit px-3 py-1.5 rounded-lg border border-gray-700/50">
@@ -214,6 +213,14 @@ export default function ProjectDetails() {
                                 <span className="text-2xl font-bold text-white">
                                     {new Intl.NumberFormat('en-DE', { style: 'currency', currency: 'EUR' }).format(buyPrice)}
                                 </span>
+                            </div>
+
+                            <div className="p-4 bg-[#111] rounded-xl border border-gray-800">
+                                <span className="text-gray-500 text-xs uppercase font-bold block mb-1">Total Expenses</span>
+                                <span className="text-2xl font-bold text-gray-300">
+                                    {new Intl.NumberFormat('en-DE', { style: 'currency', currency: 'EUR' }).format(expenseTotal)}
+                                </span>
+                                <p className="text-[10px] mt-1 text-gray-500 uppercase font-bold">Sum of all expenses</p>
                             </div>
 
                             <div className="p-4 bg-[#111] rounded-xl border border-gray-800">
