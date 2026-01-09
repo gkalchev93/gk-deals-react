@@ -1,0 +1,1 @@
+if('serviceWorker' in navigator) {window.addEventListener('load', () => {navigator.serviceWorker.register('/gk-deals-react/sw.js', { scope: '/gk-deals-react/' })})}
