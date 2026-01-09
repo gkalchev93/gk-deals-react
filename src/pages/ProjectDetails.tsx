@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import type { Project, Expense } from '../types';
-import { ArrowLeft, TrendingUp, TrendingDown, DollarSign, Calendar, Tag } from 'lucide-react';
+import { ArrowLeft, TrendingUp, TrendingDown, DollarSign, Calendar, Tag, Plus } from 'lucide-react';
+import AddExpenseModal from '../components/AddExpenseModal';
 
 export default function ProjectDetails() {
     const { id } = useParams<{ id: string }>();
@@ -10,6 +11,7 @@ export default function ProjectDetails() {
     const [project, setProject] = useState<Project | null>(null);
     const [expenses, setExpenses] = useState<Expense[]>([]);
     const [loading, setLoading] = useState(true);
+    const [isAddExpenseOpen, setIsAddExpenseOpen] = useState(false);
 
     useEffect(() => {
         if (id) {
@@ -99,10 +101,21 @@ export default function ProjectDetails() {
 
                     {/* Expense History */}
                     <div className="bg-[#1a1a1a] rounded-2xl border border-gray-800 p-8 shadow-2xl">
-                        <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
-                            <Calendar size={20} className="text-blue-400" />
-                            Expense History
-                        </h3>
+                        <div className="flex justify-between items-center mb-6">
+                            <h3 className="text-xl font-bold flex items-center gap-2">
+                                <Calendar size={20} className="text-blue-400" />
+                                Expense History
+                            </h3>
+                            {project.status !== 'completed' && (
+                                <button
+                                    onClick={() => setIsAddExpenseOpen(true)}
+                                    className="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg flex items-center gap-2 text-sm font-bold transition-all shadow-lg shadow-blue-900/20 active:scale-95"
+                                >
+                                    <Plus size={16} />
+                                    Add Expense
+                                </button>
+                            )}
+                        </div>
                         <div className="space-y-4">
                             {expenses.length === 0 ? (
                                 <p className="text-gray-500 text-center py-8 italic">No expenses recorded yet.</p>
@@ -177,6 +190,17 @@ export default function ProjectDetails() {
                     </div>
                 </div>
             </div>
+            {isAddExpenseOpen && (
+                <AddExpenseModal
+                    isOpen={isAddExpenseOpen}
+                    projectId={Number(id)}
+                    projectName={project.name}
+                    onClose={() => setIsAddExpenseOpen(false)}
+                    onAdded={() => {
+                        fetchProjectData();
+                    }}
+                />
+            )}
         </div>
     );
 }
