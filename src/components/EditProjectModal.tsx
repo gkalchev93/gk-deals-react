@@ -37,6 +37,21 @@ export default function EditProjectModal({ isOpen, project, onClose, onUpdated }
 
             // Upload Image if selected
             if (image) {
+                // Parse old storage path from image_path URL
+                if (project.image_path) {
+                    try {
+                        const urlParts = project.image_path.split('/');
+                        const oldFileName = urlParts[urlParts.length - 1];
+                        if (oldFileName) {
+                            await supabase.storage
+                                .from('gk-deals-expenses-images')
+                                .remove([oldFileName]);
+                        }
+                    } catch (e) {
+                        console.error('Failed to delete old image:', e);
+                    }
+                }
+
                 const fileExt = image.name.split('.').pop();
                 const fileName = `${Math.random()}.${fileExt}`;
                 const filePath = `${fileName}`;
