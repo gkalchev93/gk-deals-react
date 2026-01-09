@@ -19,4 +19,20 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
+  cursor: default;
+  user-select: none;
+}
+
+/* Allow text selection only in inputs and textareas */
+input,
+textarea,
+[contenteditable="true"] {
+  cursor: text;
+  user-select: text;
+}
+
+/* Make pointers consistent for buttons and links */
+button,
+a {
+  cursor: pointer;
 }

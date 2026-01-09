@@ -1,6 +1,6 @@
 import { Plus, BarChart3 } from 'lucide-react';
 import type { Project, Expense } from '../types';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 interface ProjectCardProps {
     project: Project;
@@ -9,6 +9,8 @@ interface ProjectCardProps {
 }
 
 export default function ProjectCard({ project, expenses, onAddExpense }: ProjectCardProps) {
+    const navigate = useNavigate();
+
     // Calculate total spent
     const totalSpent = expenses.reduce((sum, expense) => sum + (expense.amount || 0), 0);
 
@@ -16,9 +18,12 @@ export default function ProjectCard({ project, expenses, onAddExpense }: Project
     const formattedTotal = new Intl.NumberFormat('en-DE', { style: 'currency', currency: 'EUR' }).format(totalSpent);
 
     return (
-        <div className="bg-[#1a1a1a] rounded-xl overflow-hidden border border-gray-800 hover:border-blue-500/50 transition-all group flex flex-col h-full">
+        <div
+            onClick={() => navigate(`/project/${project.id}`)}
+            className="bg-[#1a1a1a] rounded-xl overflow-hidden border border-gray-800 hover:border-blue-500/50 transition-all group flex flex-col h-full cursor-pointer"
+        >
             {/* Image Container */}
-            <Link to={`/project/${project.id}`} className="h-48 w-full bg-gray-900 relative overflow-hidden block">
+            <div className="h-48 w-full bg-gray-900 relative overflow-hidden block">
                 {project.image_path ? (
                     <img
                         src={project.image_path}
@@ -34,13 +39,12 @@ export default function ProjectCard({ project, expenses, onAddExpense }: Project
                 <div className="absolute top-2 right-2 bg-black/60 backdrop-blur-md px-2 py-1 rounded-md text-xs font-medium border border-white/10">
                     {project.type}
                 </div>
-            </Link>
+            </div>
 
             {/* Content */}
             <div className="p-4 flex-1 flex flex-col">
-                <Link to={`/project/${project.id}`} className="hover:text-blue-400 transition-colors">
-                    <h3 className="font-bold text-lg mb-1 truncate" title={project.name}>{project.name}</h3>
-                </Link>
+                <h3 className="font-bold text-lg mb-1 truncate group-hover:text-blue-400 transition-colors" title={project.name}>{project.name}</h3>
+
                 {project.description && (
                     <p className="text-gray-400 text-xs line-clamp-2 mb-3 h-8">{project.description}</p>
                 )}
@@ -55,8 +59,11 @@ export default function ProjectCard({ project, expenses, onAddExpense }: Project
                     </div>
 
                     <button
-                        onClick={() => onAddExpense(project.id)}
-                        className="bg-blue-600 hover:bg-blue-500 text-white p-2 rounded-lg transition-colors shadow-lg shadow-blue-900/20"
+                        onClick={(e) => {
+                            e.stopPropagation(); // Prevent navigating to project page
+                            onAddExpense(project.id);
+                        }}
+                        className="bg-blue-600 hover:bg-blue-500 text-white p-2 rounded-lg transition-colors shadow-lg shadow-blue-900/20 relative z-10"
                         title="Add Expense"
                     >
                         <Plus size={18} />
