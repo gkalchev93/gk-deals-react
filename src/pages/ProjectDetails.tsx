@@ -72,18 +72,12 @@ export default function ProjectDetails() {
         }
     }
 
-    if (loading) {
-        return <div className="p-8 text-center text-gray-500">Loading project details...</div>;
-    }
-
-    if (!project) return null;
-
     // Memoize stats to prevent recalculation on every render (e.g. when typing in modals)
     const { expenseTotal, buyPrice, totalSpent, soldPrice, profit, isProfitable } = useMemo(() => {
         const eTotal = expenses.reduce((sum, e) => sum + e.amount, 0);
-        const bPrice = project.buy_price || 0;
+        const bPrice = project?.buy_price || 0;
         const tSpent = bPrice + eTotal;
-        const sPrice = project.sold_price || 0;
+        const sPrice = project?.sold_price || 0;
         const pFit = sPrice - tSpent;
 
         return {
@@ -95,6 +89,12 @@ export default function ProjectDetails() {
             isProfitable: pFit >= 0
         };
     }, [project, expenses]);
+
+    if (loading) {
+        return <div className="p-8 text-center text-gray-500">Loading project details...</div>;
+    }
+
+    if (!project) return null;
 
     return (
         <div className="p-4 md:p-8 max-w-7xl mx-auto">
