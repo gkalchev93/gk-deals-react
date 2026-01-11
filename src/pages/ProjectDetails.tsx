@@ -2,7 +2,7 @@ import { useEffect, useState, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import type { Project, Expense } from '../types';
-import { ArrowLeft, TrendingUp, TrendingDown, DollarSign, Calendar, Tag, Plus, Gauge, Hash, Copy, Check, Edit2, Trash2, FileText } from 'lucide-react';
+import { ArrowLeft, TrendingUp, TrendingDown, DollarSign, Calendar, Tag, Plus, Hash, Copy, Check, Edit2, Trash2, FileText } from 'lucide-react';
 import AddExpenseModal from '../components/AddExpenseModal';
 import EditExpenseModal from '../components/EditExpenseModal';
 import ExpensePieChart from '../components/ExpensePieChart';
@@ -151,20 +151,8 @@ export default function ProjectDetails() {
                                     )}
                                     {project.type === 'Car Rebuild' && project.odometer !== undefined && (
                                         <div className="flex flex-wrap gap-3">
-                                            <div className="flex items-center gap-2 text-gray-400 bg-gray-800/50 w-fit px-3 py-1.5 rounded-lg border border-gray-700/50">
-                                                <Gauge size={16} className="text-blue-400" />
-                                                <span className="text-xs sm:text-sm font-bold tracking-wide">
-                                                    Start: {new Intl.NumberFormat('en-DE').format(project.odometer)} km
-                                                </span>
-                                            </div>
                                             {project.status === 'completed' && project.odometer_end && (
                                                 <>
-                                                    <div className="flex items-center gap-2 text-gray-400 bg-gray-800/50 w-fit px-3 py-1.5 rounded-lg border border-gray-700/50">
-                                                        <Gauge size={16} className="text-green-400" />
-                                                        <span className="text-xs sm:text-sm font-bold tracking-wide">
-                                                            End: {new Intl.NumberFormat('en-DE').format(project.odometer_end)} km
-                                                        </span>
-                                                    </div>
                                                     {project.odometer_end > project.odometer && (
                                                         <div className="flex items-center gap-2 text-green-400 bg-green-500/10 w-fit px-3 py-1.5 rounded-lg border border-green-500/20">
                                                             <TrendingUp size={16} />
