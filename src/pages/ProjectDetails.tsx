@@ -5,6 +5,7 @@ import type { Project, Expense } from '../types';
 import { ArrowLeft, TrendingUp, TrendingDown, DollarSign, Calendar, Tag, Plus, Gauge, Hash, Copy, Check, Edit2, Trash2 } from 'lucide-react';
 import AddExpenseModal from '../components/AddExpenseModal';
 import EditExpenseModal from '../components/EditExpenseModal';
+import ExpensePieChart from '../components/ExpensePieChart';
 
 export default function ProjectDetails() {
     const { id } = useParams<{ id: string }>();
@@ -121,8 +122,8 @@ export default function ProjectDetails() {
                             </div>
                         </div>
                         <div className="p-8">
-                            <div className="flex justify-between items-start mb-4">
-                                <div>
+                            <div className="flex flex-col sm:flex-row justify-between items-start gap-4 mb-4">
+                                <div className="min-w-0 flex-1">
                                     <h1 className="text-2xl sm:text-4xl font-bold mb-2">{project.name}</h1>
                                     <p className="text-gray-400 italic mb-4">"{project.description || 'No description provided.'}"</p>
 
@@ -200,12 +201,22 @@ export default function ProjectDetails() {
                                 </span>
                             </div>
 
-                            <div className="p-4 bg-[#111] rounded-xl border border-gray-800">
-                                <span className="text-gray-500 text-xs uppercase font-bold block mb-1">Total Expenses</span>
-                                <span className="text-2xl font-bold text-gray-300">
-                                    {new Intl.NumberFormat('en-DE', { style: 'currency', currency: 'EUR' }).format(expenseTotal)}
-                                </span>
-                                <p className="text-[10px] mt-1 text-gray-500 uppercase font-bold">Sum of all expenses</p>
+                            <div className="p-4 bg-[#111] rounded-xl border border-gray-800 transition-all hover:border-gray-700">
+                                <div className="flex justify-between items-center gap-4">
+                                    <div>
+                                        <span className="text-gray-500 text-xs uppercase font-bold block mb-1">Total Expenses</span>
+                                        <span className="text-2xl font-bold text-gray-300">
+                                            {new Intl.NumberFormat('en-DE', { style: 'currency', currency: 'EUR' }).format(expenseTotal)}
+                                        </span>
+                                        <p className="text-[10px] mt-1 text-gray-500 uppercase font-bold">Sum of all expenses</p>
+                                    </div>
+                                    <div className="hidden sm:block">
+                                        <ExpensePieChart expenses={expenses} />
+                                    </div>
+                                </div>
+                                <div className="block sm:hidden mt-4 pt-4 border-t border-gray-800/50">
+                                    <ExpensePieChart expenses={expenses} />
+                                </div>
                             </div>
 
                             <div className="p-4 bg-[#111] rounded-xl border border-gray-800">
