@@ -107,9 +107,9 @@ export default function ProjectDetails() {
                 Back to Dashboard
             </button>
 
-            <div className="flex flex-col lg:grid lg:grid-cols-3 gap-8">
-                {/* 1. Project Overview (Always first) */}
-                <div className="lg:col-span-2 space-y-8 order-none">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                {/* 1. Project Overview */}
+                <div className="lg:col-span-2 space-y-8 order-1">
                     <div className="bg-[#1a1a1a] rounded-2xl border border-gray-800 overflow-hidden shadow-2xl">
                         <div className="h-64 w-full bg-gray-900 relative">
                             {project.image_path ? (
@@ -185,8 +185,8 @@ export default function ProjectDetails() {
                     </div>
                 </div>
 
-                {/* 2. Financial Summary (order-1 on mobile) */}
-                <div className="order-1 lg:order-2 space-y-6">
+                {/* 2. Financial Summary */}
+                <div className="lg:col-span-1 space-y-6 order-2">
                     <div className="bg-[#1a1a1a] rounded-2xl border border-gray-800 p-6 shadow-2xl">
                         <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
                             <TrendingUp size={20} className="text-blue-400" />
@@ -263,8 +263,8 @@ export default function ProjectDetails() {
                     </div>
                 </div>
 
-                {/* 3. Expense History (order-2 on mobile) */}
-                <div className="order-2 lg:order-none lg:col-span-2 space-y-8">
+                {/* 3. Expense History */}
+                <div className="lg:col-span-2 space-y-8 order-3">
                     <div className="bg-[#1a1a1a] rounded-2xl border border-gray-800 p-4 sm:p-8 shadow-2xl">
                         <div className="flex justify-between items-center mb-6">
                             <h3 className="text-xl font-bold flex items-center gap-2">
