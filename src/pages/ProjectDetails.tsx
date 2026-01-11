@@ -150,66 +150,30 @@ export default function ProjectDetails() {
                                         </div>
                                     )}
                                     {project.type === 'Car Rebuild' && project.odometer !== undefined && (
-                                        <div className="mt-6 bg-gradient-to-br from-gray-800/40 to-gray-900/40 rounded-2xl p-6 border border-gray-700/50 backdrop-blur-sm">
-                                            <div className="flex items-center gap-2 mb-4">
-                                                <Gauge size={18} className="text-blue-400" />
-                                                <h4 className="text-sm font-bold text-gray-300 uppercase tracking-wider">Journey Tracker</h4>
+                                        <div className="flex flex-wrap gap-3">
+                                            <div className="flex items-center gap-2 text-gray-400 bg-gray-800/50 w-fit px-3 py-1.5 rounded-lg border border-gray-700/50">
+                                                <Gauge size={16} className="text-blue-400" />
+                                                <span className="text-xs sm:text-sm font-bold tracking-wide">
+                                                    Start: {new Intl.NumberFormat('en-DE').format(project.odometer)} km
+                                                </span>
                                             </div>
-
-                                            {/* Timeline with Progress Bar */}
-                                            <div className="relative">
-                                                {/* Progress Bar Background */}
-                                                <div className="absolute top-8 left-0 right-0 h-1 bg-gray-700/50 rounded-full">
-                                                    {project.status === 'completed' && project.odometer_end && project.odometer_end > project.odometer && (
-                                                        <div
-                                                            className="h-full bg-gradient-to-r from-blue-500 to-green-500 rounded-full transition-all duration-1000"
-                                                            style={{ width: '100%' }}
-                                                        />
-                                                    )}
-                                                </div>
-
-                                                <div className="relative flex justify-between items-start">
-                                                    {/* Start Milestone */}
-                                                    <div className="flex flex-col items-center z-10">
-                                                        <div className="w-4 h-4 rounded-full bg-blue-500 border-4 border-[#1a1a1a] shadow-lg shadow-blue-500/50 mb-3" />
-                                                        <div className="text-center bg-[#1a1a1a] px-3 py-2 rounded-xl border border-blue-500/30">
-                                                            <p className="text-[10px] text-blue-400 font-bold uppercase tracking-wider mb-1">Purchase</p>
-                                                            <p className="text-lg font-bold text-white tabular-nums">
-                                                                {new Intl.NumberFormat('en-DE').format(project.odometer)}
-                                                            </p>
-                                                            <p className="text-[10px] text-gray-500 font-semibold">km</p>
-                                                        </div>
+                                            {project.status === 'completed' && project.odometer_end && (
+                                                <>
+                                                    <div className="flex items-center gap-2 text-gray-400 bg-gray-800/50 w-fit px-3 py-1.5 rounded-lg border border-gray-700/50">
+                                                        <Gauge size={16} className="text-green-400" />
+                                                        <span className="text-xs sm:text-sm font-bold tracking-wide">
+                                                            End: {new Intl.NumberFormat('en-DE').format(project.odometer_end)} km
+                                                        </span>
                                                     </div>
-
-                                                    {/* End Milestone (if completed) */}
-                                                    {project.status === 'completed' && project.odometer_end && (
-                                                        <div className="flex flex-col items-center z-10">
-                                                            <div className="w-4 h-4 rounded-full bg-green-500 border-4 border-[#1a1a1a] shadow-lg shadow-green-500/50 mb-3" />
-                                                            <div className="text-center bg-[#1a1a1a] px-3 py-2 rounded-xl border border-green-500/30">
-                                                                <p className="text-[10px] text-green-400 font-bold uppercase tracking-wider mb-1">Sold</p>
-                                                                <p className="text-lg font-bold text-white tabular-nums">
-                                                                    {new Intl.NumberFormat('en-DE').format(project.odometer_end)}
-                                                                </p>
-                                                                <p className="text-[10px] text-gray-500 font-semibold">km</p>
-                                                            </div>
+                                                    {project.odometer_end > project.odometer && (
+                                                        <div className="flex items-center gap-2 text-green-400 bg-green-500/10 w-fit px-3 py-1.5 rounded-lg border border-green-500/20">
+                                                            <TrendingUp size={16} />
+                                                            <span className="text-xs sm:text-sm font-bold tracking-wide">
+                                                                Total: {new Intl.NumberFormat('en-DE').format(project.odometer_end - project.odometer)} km driven
+                                                            </span>
                                                         </div>
                                                     )}
-                                                </div>
-                                            </div>
-
-                                            {/* Total Distance Badge */}
-                                            {project.status === 'completed' && project.odometer_end && project.odometer_end > project.odometer && (
-                                                <div className="mt-6 pt-4 border-t border-gray-700/50">
-                                                    <div className="flex items-center justify-center gap-3 bg-gradient-to-r from-blue-500/10 to-green-500/10 rounded-xl p-4 border border-gray-700/30">
-                                                        <TrendingUp size={20} className="text-green-400" />
-                                                        <div className="text-center">
-                                                            <p className="text-xs text-gray-400 font-semibold uppercase tracking-wider mb-1">Total Distance</p>
-                                                            <p className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-green-400 bg-clip-text text-transparent tabular-nums">
-                                                                {new Intl.NumberFormat('en-DE').format(project.odometer_end - project.odometer)} km
-                                                            </p>
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                                </>
                                             )}
                                         </div>
                                     )}
