@@ -6,11 +6,13 @@ import Dashboard from './pages/Dashboard';
 import ProjectDetails from './pages/ProjectDetails';
 import Settings from './pages/Settings';
 import Login from './pages/Login';
+import ScrollToTop from './components/ScrollToTop';
 
 
 function App() {
   return (
     <AuthProvider>
+      <ScrollToTop />
       <Routes>
         <Route path="/login" element={<Login />} />
 
