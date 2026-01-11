@@ -106,9 +106,9 @@ export default function ProjectDetails() {
                 Back to Dashboard
             </button>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                {/* Project Overview */}
-                <div className="lg:col-span-2 space-y-8">
+            <div className="flex flex-col lg:grid lg:grid-cols-3 gap-8">
+                {/* 1. Project Overview (Always first) */}
+                <div className="lg:col-span-2 space-y-8 order-none">
                     <div className="bg-[#1a1a1a] rounded-2xl border border-gray-800 overflow-hidden shadow-2xl">
                         <div className="h-64 w-full bg-gray-900 relative">
                             {project.image_path ? (
@@ -123,13 +123,12 @@ export default function ProjectDetails() {
                         <div className="p-8">
                             <div className="flex justify-between items-start mb-4">
                                 <div>
-                                    <h1 className="text-4xl font-bold mb-2">{project.name}</h1>
+                                    <h1 className="text-2xl sm:text-4xl font-bold mb-2">{project.name}</h1>
                                     <p className="text-gray-400 italic mb-4">"{project.description || 'No description provided.'}"</p>
 
-                                    {/* VIN Number moved below description and enlarged */}
                                     {project.type === 'Car Rebuild' && project.vin && (
                                         <div className="flex items-center gap-2 mb-6">
-                                            <div className="flex items-center gap-3 text-gray-300 bg-gray-800 px-4 py-2 rounded-xl border border-gray-700 font-mono shadow-inner">
+                                            <div className="flex items-center gap-3 text-gray-300 bg-gray-800 px-4 py-2 rounded-xl border border-gray-700 font-mono shadow-inner overflow-x-auto whitespace-nowrap">
                                                 <Hash size={18} className="text-blue-400" />
                                                 <span className="text-base font-bold tracking-widest">
                                                     {project.vin}
@@ -152,7 +151,7 @@ export default function ProjectDetails() {
                                         <div className="flex flex-wrap gap-3">
                                             <div className="flex items-center gap-2 text-gray-400 bg-gray-800/50 w-fit px-3 py-1.5 rounded-lg border border-gray-700/50">
                                                 <Gauge size={16} className="text-blue-400" />
-                                                <span className="text-sm font-bold tracking-wide">
+                                                <span className="text-xs sm:text-sm font-bold tracking-wide">
                                                     Start: {new Intl.NumberFormat('en-DE').format(project.odometer)} km
                                                 </span>
                                             </div>
@@ -160,14 +159,14 @@ export default function ProjectDetails() {
                                                 <>
                                                     <div className="flex items-center gap-2 text-gray-400 bg-gray-800/50 w-fit px-3 py-1.5 rounded-lg border border-gray-700/50">
                                                         <Gauge size={16} className="text-green-400" />
-                                                        <span className="text-sm font-bold tracking-wide">
+                                                        <span className="text-xs sm:text-sm font-bold tracking-wide">
                                                             End: {new Intl.NumberFormat('en-DE').format(project.odometer_end)} km
                                                         </span>
                                                     </div>
                                                     {project.odometer_end > project.odometer && (
                                                         <div className="flex items-center gap-2 text-green-400 bg-green-500/10 w-fit px-3 py-1.5 rounded-lg border border-green-500/20">
                                                             <TrendingUp size={16} />
-                                                            <span className="text-sm font-bold tracking-wide">
+                                                            <span className="text-xs sm:text-sm font-bold tracking-wide">
                                                                 Total: {new Intl.NumberFormat('en-DE').format(project.odometer_end - project.odometer)} km driven
                                                             </span>
                                                         </div>
@@ -176,90 +175,17 @@ export default function ProjectDetails() {
                                             )}
                                         </div>
                                     )}
-                                    {/* Old VIN location removed */}
                                 </div>
-                                <div className={`px-4 py-2 rounded-lg font-bold text-sm ${project.status === 'completed' ? 'bg-green-500/20 text-green-400 border border-green-500/30' : 'bg-blue-500/20 text-blue-400 border border-blue-500/30'}`}>
+                                <div className={`px-3 sm:px-4 py-1 sm:py-2 rounded-lg font-bold text-[10px] sm:text-sm whitespace-nowrap ${project.status === 'completed' ? 'bg-green-500/20 text-green-400 border border-green-500/30' : 'bg-blue-500/20 text-blue-400 border border-blue-500/30'}`}>
                                     {project.status?.toUpperCase() || 'ACTIVE'}
                                 </div>
                             </div>
                         </div>
                     </div>
-
-                    {/* Expense History */}
-                    <div className="bg-[#1a1a1a] rounded-2xl border border-gray-800 p-8 shadow-2xl">
-                        <div className="flex justify-between items-center mb-6">
-                            <h3 className="text-xl font-bold flex items-center gap-2">
-                                <Calendar size={20} className="text-blue-400" />
-                                Expense History
-                            </h3>
-                            {project.status !== 'completed' && (
-                                <button
-                                    onClick={() => setIsAddExpenseOpen(true)}
-                                    className="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg flex items-center gap-2 text-sm font-bold transition-all shadow-lg shadow-blue-900/20 active:scale-95"
-                                >
-                                    <Plus size={16} />
-                                    Add Expense
-                                </button>
-                            )}
-                        </div>
-                        <div className="space-y-4">
-                            {expenses.length === 0 ? (
-                                <p className="text-gray-500 text-center py-8 italic">No expenses recorded yet.</p>
-                            ) : (
-                                expenses.map(expense => (
-                                    <div key={expense.id} className="flex items-center justify-between p-4 bg-[#111] rounded-xl border border-gray-800 hover:border-gray-700 transition-colors group">
-                                        <div className="flex items-center gap-4">
-                                            <div className="p-2 bg-gray-800 rounded-lg">
-                                                <Tag size={16} className="text-blue-400" />
-                                            </div>
-                                            <div>
-                                                <p className="font-medium text-white">{expense.description}</p>
-                                                <p className="text-xs text-gray-500">{new Date(expense.date).toLocaleDateString()}</p>
-                                            </div>
-                                        </div>
-                                        <div className="flex items-center gap-4">
-                                            <div className="text-right">
-                                                <p className="font-bold text-white">
-                                                    {new Intl.NumberFormat('en-DE', { style: 'currency', currency: 'EUR' }).format(expense.amount)}
-                                                </p>
-                                                <p className="text-[10px] text-gray-600 uppercase font-bold">{expense.category}</p>
-                                            </div>
-
-                                            {project.status !== 'completed' && (
-                                                <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                    <button
-                                                        onClick={(e) => {
-                                                            e.stopPropagation();
-                                                            setSelectedExpense(expense);
-                                                            setIsEditExpenseOpen(true);
-                                                        }}
-                                                        className="p-1.5 hover:bg-gray-800 rounded-lg text-gray-400 hover:text-blue-400 transition-colors"
-                                                        title="Edit"
-                                                    >
-                                                        <Edit2 size={14} />
-                                                    </button>
-                                                    <button
-                                                        onClick={(e) => {
-                                                            e.stopPropagation();
-                                                            handleDeleteExpense(expense.id);
-                                                        }}
-                                                        className="p-1.5 hover:bg-gray-800 rounded-lg text-gray-400 hover:text-red-400 transition-colors"
-                                                        title="Delete"
-                                                    >
-                                                        <Trash2 size={14} />
-                                                    </button>
-                                                </div>
-                                            )}
-                                        </div>
-                                    </div>
-                                ))
-                            )}
-                        </div>
-                    </div>
                 </div>
 
-                {/* Statistics Sidebar */}
-                <div className="space-y-6">
+                {/* 2. Financial Summary (order-1 on mobile) */}
+                <div className="order-1 lg:order-2 space-y-6">
                     <div className="bg-[#1a1a1a] rounded-2xl border border-gray-800 p-6 shadow-2xl">
                         <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
                             <TrendingUp size={20} className="text-blue-400" />
@@ -325,7 +251,82 @@ export default function ProjectDetails() {
                         )}
                     </div>
                 </div>
+
+                {/* 3. Expense History (order-2 on mobile) */}
+                <div className="order-2 lg:order-none lg:col-span-2 space-y-8">
+                    <div className="bg-[#1a1a1a] rounded-2xl border border-gray-800 p-4 sm:p-8 shadow-2xl">
+                        <div className="flex justify-between items-center mb-6">
+                            <h3 className="text-xl font-bold flex items-center gap-2">
+                                <Calendar size={20} className="text-blue-400" />
+                                Expense History
+                            </h3>
+                            {project.status !== 'completed' && (
+                                <button
+                                    onClick={() => setIsAddExpenseOpen(true)}
+                                    className="bg-blue-600 hover:bg-blue-500 text-white p-2 sm:px-4 sm:py-2 rounded-lg flex items-center gap-2 text-sm font-bold transition-all shadow-lg shadow-blue-900/20 active:scale-95"
+                                >
+                                    <Plus size={16} />
+                                    <span className="hidden sm:inline">Add Expense</span>
+                                </button>
+                            )}
+                        </div>
+                        <div className="space-y-4">
+                            {expenses.length === 0 ? (
+                                <p className="text-gray-500 text-center py-8 italic">No expenses recorded yet.</p>
+                            ) : (
+                                expenses.map(expense => (
+                                    <div key={expense.id} className="flex items-center justify-between p-4 bg-[#111] rounded-xl border border-gray-800 hover:border-gray-700 transition-colors group">
+                                        <div className="flex items-center gap-4">
+                                            <div className="p-2 bg-gray-800 rounded-lg">
+                                                <Tag size={16} className="text-blue-400" />
+                                            </div>
+                                            <div>
+                                                <p className="font-medium text-white text-sm sm:text-base">{expense.description}</p>
+                                                <p className="text-[10px] sm:text-xs text-gray-500">{new Date(expense.date).toLocaleDateString()}</p>
+                                            </div>
+                                        </div>
+                                        <div className="flex items-center gap-4">
+                                            <div className="text-right">
+                                                <p className="font-bold text-white text-sm sm:text-base">
+                                                    {new Intl.NumberFormat('en-DE', { style: 'currency', currency: 'EUR' }).format(expense.amount)}
+                                                </p>
+                                                <p className="text-[10px] text-gray-600 uppercase font-bold">{expense.category}</p>
+                                            </div>
+
+                                            {project.status !== 'completed' && (
+                                                <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                    <button
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            setSelectedExpense(expense);
+                                                            setIsEditExpenseOpen(true);
+                                                        }}
+                                                        className="p-1.5 hover:bg-gray-800 rounded-lg text-gray-400 hover:text-blue-400 transition-colors"
+                                                        title="Edit"
+                                                    >
+                                                        <Edit2 size={14} />
+                                                    </button>
+                                                    <button
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            handleDeleteExpense(expense.id);
+                                                        }}
+                                                        className="p-1.5 hover:bg-gray-800 rounded-lg text-gray-400 hover:text-red-400 transition-colors"
+                                                        title="Delete"
+                                                    >
+                                                        <Trash2 size={14} />
+                                                    </button>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                ))
+                            )}
+                        </div>
+                    </div>
+                </div>
             </div>
+
             {isAddExpenseOpen && (
                 <AddExpenseModal
                     isOpen={isAddExpenseOpen}
