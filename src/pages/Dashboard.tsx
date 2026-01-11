@@ -3,12 +3,14 @@ import { supabase } from '../lib/supabase';
 import type { Project, Expense } from '../types';
 import ProjectCard from '../components/ProjectCard';
 import AddExpenseModal from '../components/AddExpenseModal';
+import ProjectNotesModal from '../components/ProjectNotesModal';
 
 export default function Dashboard() {
     const [projects, setProjects] = useState<Project[]>([]);
     const [expenses, setExpenses] = useState<Expense[]>([]);
     const [loading, setLoading] = useState(true);
     const [expenseModalProject, setExpenseModalProject] = useState<{ id: number, name: string } | null>(null);
+    const [notesModalProject, setNotesModalProject] = useState<Project | null>(null);
 
     useEffect(() => {
         fetchData();
@@ -50,6 +52,10 @@ export default function Dashboard() {
         if (project) {
             setExpenseModalProject({ id: projectId, name: project.name });
         }
+    };
+
+    const handleNotesClick = (project: Project) => {
+        setNotesModalProject(project);
     };
 
     // Memoize the sorted projects and filtered lists
@@ -134,6 +140,7 @@ export default function Dashboard() {
                                     project={project}
                                     expenses={expenses.filter(e => e.project_id === project.id)}
                                     onAddExpense={handleAddExpense}
+                                    onNotesClick={handleNotesClick}
                                 />
                             ))}
                             {activeProjects.length === 0 && (
@@ -158,6 +165,7 @@ export default function Dashboard() {
                                         project={project}
                                         expenses={expenses.filter(e => e.project_id === project.id)}
                                         onAddExpense={handleAddExpense}
+                                        onNotesClick={handleNotesClick}
                                     />
                                 ))}
                             </div>
@@ -171,6 +179,19 @@ export default function Dashboard() {
                             projectName={expenseModalProject.name}
                             onClose={() => setExpenseModalProject(null)}
                             onAdded={() => {
+                                fetchData();
+                            }}
+                        />
+                    )}
+
+                    {notesModalProject && (
+                        <ProjectNotesModal
+                            isOpen={!!notesModalProject}
+                            projectId={notesModalProject.id}
+                            projectName={notesModalProject.name}
+                            initialNotes={notesModalProject.notes || ''}
+                            onClose={() => setNotesModalProject(null)}
+                            onSaved={() => {
                                 fetchData();
                             }}
                         />

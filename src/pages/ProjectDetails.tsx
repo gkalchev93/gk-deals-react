@@ -2,10 +2,11 @@ import { useEffect, useState, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import type { Project, Expense } from '../types';
-import { ArrowLeft, TrendingUp, TrendingDown, DollarSign, Calendar, Tag, Plus, Gauge, Hash, Copy, Check, Edit2, Trash2 } from 'lucide-react';
+import { ArrowLeft, TrendingUp, TrendingDown, DollarSign, Calendar, Tag, Plus, Gauge, Hash, Copy, Check, Edit2, Trash2, FileText } from 'lucide-react';
 import AddExpenseModal from '../components/AddExpenseModal';
 import EditExpenseModal from '../components/EditExpenseModal';
 import ExpensePieChart from '../components/ExpensePieChart';
+import ProjectNotesModal from '../components/ProjectNotesModal';
 
 export default function ProjectDetails() {
     const { id } = useParams<{ id: string }>();
@@ -15,6 +16,7 @@ export default function ProjectDetails() {
     const [loading, setLoading] = useState(true);
     const [isAddExpenseOpen, setIsAddExpenseOpen] = useState(false);
     const [isEditExpenseOpen, setIsEditExpenseOpen] = useState(false);
+    const [isNotesOpen, setIsNotesOpen] = useState(false);
     const [selectedExpense, setSelectedExpense] = useState<Expense | null>(null);
     const [copiedVin, setCopiedVin] = useState(false);
 
@@ -181,6 +183,29 @@ export default function ProjectDetails() {
                                     {project.status?.toUpperCase() || 'ACTIVE'}
                                 </div>
                             </div>
+                        </div>
+                    </div>
+
+                    {/* Project Notes Section */}
+                    <div className="bg-[#1a1a1a] rounded-2xl border border-gray-800 p-8 shadow-2xl relative overflow-hidden group">
+                        <div className="flex justify-between items-center mb-6">
+                            <h3 className="text-xl font-bold flex items-center gap-2">
+                                <FileText size={20} className="text-blue-400" />
+                                Project Notes
+                            </h3>
+                            <button
+                                onClick={() => setIsNotesOpen(true)}
+                                className="p-2 hover:bg-gray-800 rounded-xl transition-all text-gray-500 hover:text-blue-400 border border-transparent hover:border-gray-700 active:scale-90"
+                            >
+                                <Edit2 size={20} />
+                            </button>
+                        </div>
+                        <div className="bg-[#111] rounded-xl border border-gray-800/50 p-6 min-h-[120px]">
+                            {project.notes ? (
+                                <p className="text-gray-300 text-sm leading-relaxed whitespace-pre-wrap">{project.notes}</p>
+                            ) : (
+                                <p className="text-gray-600 italic text-sm text-center py-4">No notes added yet. Click edit to add details about this project.</p>
+                            )}
                         </div>
                     </div>
                 </div>
@@ -359,6 +384,18 @@ export default function ProjectDetails() {
                         setSelectedExpense(null);
                     }}
                     onUpdated={() => {
+                        fetchProjectData();
+                    }}
+                />
+            )}
+            {isNotesOpen && (
+                <ProjectNotesModal
+                    isOpen={isNotesOpen}
+                    projectId={Number(id)}
+                    projectName={project.name}
+                    initialNotes={project.notes || ''}
+                    onClose={() => setIsNotesOpen(false)}
+                    onSaved={() => {
                         fetchProjectData();
                     }}
                 />

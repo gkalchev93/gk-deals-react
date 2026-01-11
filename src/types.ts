@@ -13,6 +13,7 @@ export interface Project {
     odometer?: number;
     odometer_end?: number;
     vin?: string;
+    notes?: string;
 }
 
 export interface Expense {
