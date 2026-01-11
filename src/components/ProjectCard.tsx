@@ -45,11 +45,7 @@ export default function ProjectCard({ project, expenses, onAddExpense, onNotesCl
 
             {/* Content */}
             <div className="p-4 flex-1 flex flex-col">
-                <h3 className="font-bold text-lg mb-1 truncate group-hover:text-blue-400 transition-colors" title={project.name}>{project.name}</h3>
-
-                <p className="text-gray-400 text-xs line-clamp-2 mb-3 h-8">
-                    {project.description || ''}
-                </p>
+                <h3 className="font-bold text-lg mb-3 truncate group-hover:text-blue-400 transition-colors" title={project.name}>{project.name}</h3>
 
                 <div className="mt-auto flex items-end justify-between pt-2">
                     <div>

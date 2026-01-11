@@ -11,7 +11,6 @@ interface CreateProjectModalProps {
 export default function CreateProjectModal({ isOpen, onClose, onCreated }: CreateProjectModalProps) {
     const [name, setName] = useState('');
     const [type, setType] = useState('Car Rebuild');
-    const [description, setDescription] = useState('');
     const [status, setStatus] = useState<'active' | 'completed'>('active');
     const [buyPrice, setBuyPrice] = useState('0');
     const [odometer, setOdometer] = useState('0');
@@ -62,7 +61,6 @@ export default function CreateProjectModal({ isOpen, onClose, onCreated }: Creat
                     {
                         name,
                         type,
-                        description,
                         image_path: imagePath,
                         is_deleted: false,
                         user_id: user.id,
@@ -81,7 +79,6 @@ export default function CreateProjectModal({ isOpen, onClose, onCreated }: Creat
             onClose();
             // Reset form
             setName('');
-            setDescription('');
             setImage(null);
 
         } catch (error) {
@@ -164,16 +161,6 @@ export default function CreateProjectModal({ isOpen, onClose, onCreated }: Creat
                             />
                         </div>
                     )}
-
-                    <div>
-                        <label className="block text-xs uppercase text-gray-500 font-semibold mb-1">Description</label>
-                        <textarea
-                            value={description}
-                            onChange={(e) => setDescription(e.target.value)}
-                            className="w-full bg-[#111] border border-gray-700 rounded-lg p-2.5 text-white focus:border-blue-500 focus:outline-none h-24"
-                            placeholder="Project goals..."
-                        />
-                    </div>
 
                     <div className="grid grid-cols-2 gap-4">
                         <div>

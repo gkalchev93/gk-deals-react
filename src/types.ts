@@ -2,7 +2,6 @@ export interface Project {
     id: number;
     name: string;
     type: string;
-    description?: string;
     image_path?: string;
     is_deleted?: boolean;
     created_at: string;

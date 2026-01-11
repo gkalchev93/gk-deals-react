@@ -127,7 +127,6 @@ export default function ProjectDetails() {
                             <div className="flex flex-col sm:flex-row justify-between items-start gap-4 mb-4">
                                 <div className="min-w-0 flex-1">
                                     <h1 className="text-2xl sm:text-4xl font-bold mb-2">{project.name}</h1>
-                                    <p className="text-gray-400 italic mb-4">"{project.description || 'No description provided.'}"</p>
 
                                     {project.type === 'Car Rebuild' && project.vin && (
                                         <div className="flex items-center gap-2 mb-6">

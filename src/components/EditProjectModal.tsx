@@ -13,7 +13,6 @@ interface EditProjectModalProps {
 export default function EditProjectModal({ isOpen, project, onClose, onUpdated }: EditProjectModalProps) {
     const [name, setName] = useState(project.name);
     const [type, setType] = useState(project.type);
-    const [description, setDescription] = useState(project.description || '');
     const [status, setStatus] = useState<'active' | 'completed'>(project.status || 'active');
     const [buyPrice, setBuyPrice] = useState(String(project.buy_price || 0));
     const [odometer, setOdometer] = useState(String(project.odometer || 0));
@@ -28,7 +27,6 @@ export default function EditProjectModal({ isOpen, project, onClose, onUpdated }
         if (project) {
             setName(project.name);
             setType(project.type);
-            setDescription(project.description || '');
             setBuyPrice(String(project.buy_price || 0));
             setOdometer(String(project.odometer || 0));
             setOdometerEnd(String(project.odometer_end || 0));
@@ -88,7 +86,6 @@ export default function EditProjectModal({ isOpen, project, onClose, onUpdated }
                 .update({
                     name,
                     type,
-                    description,
                     image_path: imagePath,
                     status: status,
                     buy_price: type === 'Car Rebuild' ? (parseFloat(buyPrice) || 0) : 0,
@@ -184,15 +181,6 @@ export default function EditProjectModal({ isOpen, project, onClose, onUpdated }
                                 />
                             </div>
                         )}
-                        <div>
-                            <label className="block text-xs uppercase text-gray-500 font-semibold mb-1">Description</label>
-                            <textarea
-                                value={description}
-                                onChange={(e) => setDescription(e.target.value)}
-                                className="w-full bg-[#111] border border-gray-700 rounded-lg p-2.5 text-white focus:border-blue-500 focus:outline-none h-32"
-                                placeholder="..."
-                            />
-                        </div>
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
