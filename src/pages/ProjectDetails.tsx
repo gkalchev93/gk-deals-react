@@ -2,8 +2,9 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import type { Project, Expense } from '../types';
-import { ArrowLeft, TrendingUp, TrendingDown, DollarSign, Calendar, Tag, Plus, Gauge, Hash, Copy, Check } from 'lucide-react';
+import { ArrowLeft, TrendingUp, TrendingDown, DollarSign, Calendar, Tag, Plus, Gauge, Hash, Copy, Check, Edit2, Trash2 } from 'lucide-react';
 import AddExpenseModal from '../components/AddExpenseModal';
+import EditExpenseModal from '../components/EditExpenseModal';
 
 export default function ProjectDetails() {
     const { id } = useParams<{ id: string }>();
@@ -12,6 +13,8 @@ export default function ProjectDetails() {
     const [expenses, setExpenses] = useState<Expense[]>([]);
     const [loading, setLoading] = useState(true);
     const [isAddExpenseOpen, setIsAddExpenseOpen] = useState(false);
+    const [isEditExpenseOpen, setIsEditExpenseOpen] = useState(false);
+    const [selectedExpense, setSelectedExpense] = useState<Expense | null>(null);
     const [copiedVin, setCopiedVin] = useState(false);
 
     useEffect(() => {
@@ -49,6 +52,23 @@ export default function ProjectDetails() {
             navigate('/');
         } finally {
             setLoading(false);
+        }
+    }
+
+    async function handleDeleteExpense(expenseId: number) {
+        if (!window.confirm('Are you sure you want to delete this expense?')) return;
+
+        try {
+            const { error } = await supabase
+                .from('expense')
+                .delete()
+                .eq('id', expenseId);
+
+            if (error) throw error;
+            fetchProjectData();
+        } catch (error) {
+            console.error('Error deleting expense:', error);
+            alert('Error deleting expense.');
         }
     }
 
@@ -176,7 +196,7 @@ export default function ProjectDetails() {
                                 <p className="text-gray-500 text-center py-8 italic">No expenses recorded yet.</p>
                             ) : (
                                 expenses.map(expense => (
-                                    <div key={expense.id} className="flex items-center justify-between p-4 bg-[#111] rounded-xl border border-gray-800 hover:border-gray-700 transition-colors">
+                                    <div key={expense.id} className="flex items-center justify-between p-4 bg-[#111] rounded-xl border border-gray-800 hover:border-gray-700 transition-colors group">
                                         <div className="flex items-center gap-4">
                                             <div className="p-2 bg-gray-800 rounded-lg">
                                                 <Tag size={16} className="text-blue-400" />
@@ -186,11 +206,39 @@ export default function ProjectDetails() {
                                                 <p className="text-xs text-gray-500">{new Date(expense.date).toLocaleDateString()}</p>
                                             </div>
                                         </div>
-                                        <div className="text-right">
-                                            <p className="font-bold text-white">
-                                                {new Intl.NumberFormat('en-DE', { style: 'currency', currency: 'EUR' }).format(expense.amount)}
-                                            </p>
-                                            <p className="text-[10px] text-gray-600 uppercase font-bold">{expense.category}</p>
+                                        <div className="flex items-center gap-4">
+                                            <div className="text-right">
+                                                <p className="font-bold text-white">
+                                                    {new Intl.NumberFormat('en-DE', { style: 'currency', currency: 'EUR' }).format(expense.amount)}
+                                                </p>
+                                                <p className="text-[10px] text-gray-600 uppercase font-bold">{expense.category}</p>
+                                            </div>
+
+                                            {project.status !== 'completed' && (
+                                                <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                    <button
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            setSelectedExpense(expense);
+                                                            setIsEditExpenseOpen(true);
+                                                        }}
+                                                        className="p-1.5 hover:bg-gray-800 rounded-lg text-gray-400 hover:text-blue-400 transition-colors"
+                                                        title="Edit"
+                                                    >
+                                                        <Edit2 size={14} />
+                                                    </button>
+                                                    <button
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            handleDeleteExpense(expense.id);
+                                                        }}
+                                                        className="p-1.5 hover:bg-gray-800 rounded-lg text-gray-400 hover:text-red-400 transition-colors"
+                                                        title="Delete"
+                                                    >
+                                                        <Trash2 size={14} />
+                                                    </button>
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
                                 ))
@@ -274,6 +322,20 @@ export default function ProjectDetails() {
                     projectName={project.name}
                     onClose={() => setIsAddExpenseOpen(false)}
                     onAdded={() => {
+                        fetchProjectData();
+                    }}
+                />
+            )}
+            {isEditExpenseOpen && selectedExpense && (
+                <EditExpenseModal
+                    isOpen={isEditExpenseOpen}
+                    expense={selectedExpense}
+                    projectName={project.name}
+                    onClose={() => {
+                        setIsEditExpenseOpen(false);
+                        setSelectedExpense(null);
+                    }}
+                    onUpdated={() => {
                         fetchProjectData();
                     }}
                 />
