@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import type { Project, Expense } from '../types';
@@ -27,25 +27,25 @@ export default function ProjectDetails() {
         try {
             setLoading(true);
 
-            // Fetch Project
-            const { data: projectData, error: projectError } = await supabase
-                .from('project')
-                .select('*')
-                .eq('id', id)
-                .single();
+            // Fetch Project and Expenses in parallel
+            const [projectResponse, expensesResponse] = await Promise.all([
+                supabase
+                    .from('project')
+                    .select('*')
+                    .eq('id', id)
+                    .single(),
+                supabase
+                    .from('expense')
+                    .select('*')
+                    .eq('project_id', id)
+                    .order('date', { ascending: false })
+            ]);
 
-            if (projectError) throw projectError;
-            setProject(projectData);
+            if (projectResponse.error) throw projectResponse.error;
+            if (expensesResponse.error) throw expensesResponse.error;
 
-            // Fetch Expenses
-            const { data: expensesData, error: expensesError } = await supabase
-                .from('expense')
-                .select('*')
-                .eq('project_id', id)
-                .order('date', { ascending: false });
-
-            if (expensesError) throw expensesError;
-            setExpenses(expensesData || []);
+            setProject(projectResponse.data);
+            setExpenses(expensesResponse.data || []);
 
         } catch (error) {
             console.error('Error fetching project details:', error);
@@ -78,12 +78,23 @@ export default function ProjectDetails() {
 
     if (!project) return null;
 
-    const expenseTotal = expenses.reduce((sum, e) => sum + e.amount, 0);
-    const buyPrice = project.buy_price || 0;
-    const totalSpent = buyPrice + expenseTotal;
-    const soldPrice = project.sold_price || 0;
-    const profit = soldPrice - totalSpent;
-    const isProfitable = profit >= 0;
+    // Memoize stats to prevent recalculation on every render (e.g. when typing in modals)
+    const { expenseTotal, buyPrice, totalSpent, soldPrice, profit, isProfitable } = useMemo(() => {
+        const eTotal = expenses.reduce((sum, e) => sum + e.amount, 0);
+        const bPrice = project.buy_price || 0;
+        const tSpent = bPrice + eTotal;
+        const sPrice = project.sold_price || 0;
+        const pFit = sPrice - tSpent;
+
+        return {
+            expenseTotal: eTotal,
+            buyPrice: bPrice,
+            totalSpent: tSpent,
+            soldPrice: sPrice,
+            profit: pFit,
+            isProfitable: pFit >= 0
+        };
+    }, [project, expenses]);
 
     return (
         <div className="p-4 md:p-8 max-w-7xl mx-auto">

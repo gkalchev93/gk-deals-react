@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { supabase } from '../lib/supabase';
 import type { Project, Expense } from '../types';
 import ProjectCard from '../components/ProjectCard';
@@ -16,29 +16,27 @@ export default function Dashboard() {
 
     async function fetchData() {
         try {
-            setLoading(true);
+            // Keep loading only for the initial fetch to avoid UI flicker
+            if (projects.length === 0) setLoading(true);
 
-            // Fetch Projects
-            const { data: projectsData, error: projectsError } = await supabase
-                .from('project')
-                .select('*')
-                .order('created_at', { ascending: false });
+            // Fetch Projects and Expenses in parallel
+            const [projectsResponse, expensesResponse] = await Promise.all([
+                supabase
+                    .from('project')
+                    .select('*')
+                    .order('created_at', { ascending: false }),
+                supabase
+                    .from('expense')
+                    .select('*')
+            ]);
 
-            if (projectsError) throw projectsError;
+            if (projectsResponse.error) throw projectsResponse.error;
+            if (expensesResponse.error) throw expensesResponse.error;
 
             // Filter out soft-deleted projects
-            // Note: If you have RLS policies filtering this on server, this is redundant but safe.
-            const activeProjects = (projectsData || []).filter(p => !p.is_deleted);
-            setProjects(activeProjects);
-
-            // Fetch Expenses
-            // Use 'select' with join if possible, but flat fetching is easier to manage type-wise initially
-            const { data: expensesData, error: expensesError } = await supabase
-                .from('expense')
-                .select('*');
-
-            if (expensesError) throw expensesError;
-            setExpenses(expensesData || []);
+            const activeProjectsData = (projectsResponse.data || []).filter(p => !p.is_deleted);
+            setProjects(activeProjectsData);
+            setExpenses(expensesResponse.data || []);
 
         } catch (error) {
             console.error('Error fetching data:', error);
@@ -54,25 +52,45 @@ export default function Dashboard() {
         }
     };
 
-    // Sort projects by latest activity (last expense date or creation date)
-    const sortedProjects = [...projects].sort((a, b) => {
-        const getLatestActivity = (proj: Project) => {
-            const projectExpenses = expenses.filter(e => e.project_id === proj.id);
-            if (projectExpenses.length === 0) return new Date(proj.created_at).getTime();
-            const dates = projectExpenses.map(e => new Date(e.date).getTime());
-            return Math.max(...dates);
+    // Memoize the sorted projects and filtered lists
+    const { activeProjects, completedProjects, totalPortfolioValue } = useMemo(() => {
+        // Pre-calculate latest activity for each project for O(E + P log P) instead of O(P * E)
+        const projectActivityMap = new Map<number, number>();
+
+        // Initialize with creation date
+        projects.forEach(p => {
+            projectActivityMap.set(p.id, new Date(p.created_at).getTime());
+        });
+
+        // Update with expense dates
+        expenses.forEach(e => {
+            const currentLatest = projectActivityMap.get(e.project_id) || 0;
+            const expenseTime = new Date(e.date).getTime();
+            if (expenseTime > currentLatest) {
+                projectActivityMap.set(e.project_id, expenseTime);
+            }
+        });
+
+        const sorted = [...projects].sort((a, b) => {
+            const timeA = projectActivityMap.get(a.id) || 0;
+            const timeB = projectActivityMap.get(b.id) || 0;
+            return timeB - timeA;
+        });
+
+        const active = sorted.filter(p => p.status !== 'completed');
+        const completed = sorted.filter(p => p.status === 'completed');
+
+        // Total Portfolio = Sum of all Buy Prices + Sum of all Expenses
+        const totalBuyPrice = projects.reduce((sum, p) => sum + (p.buy_price || 0), 0);
+        const totalExpenseAmount = expenses.reduce((sum, e) => sum + e.amount, 0);
+        const totalValue = totalBuyPrice + totalExpenseAmount;
+
+        return {
+            activeProjects: active,
+            completedProjects: completed,
+            totalPortfolioValue: totalValue
         };
-        return getLatestActivity(b) - getLatestActivity(a);
-    });
-
-    // Separate projects
-    const activeProjects = sortedProjects.filter(p => p.status !== 'completed');
-    const completedProjects = sortedProjects.filter(p => p.status === 'completed');
-
-    // Total Portfolio = Sum of all Buy Prices + Sum of all Expenses
-    const totalBuyPrice = projects.reduce((sum, p) => sum + (p.buy_price || 0), 0);
-    const totalExpenseAmount = expenses.reduce((sum, e) => sum + e.amount, 0);
-    const totalPortfolioValue = totalBuyPrice + totalExpenseAmount;
+    }, [projects, expenses]);
 
     return (
         <div className="p-4 md:p-8">
@@ -109,7 +127,7 @@ export default function Dashboard() {
                             <div className="h-2 w-2 rounded-full bg-blue-500 animate-pulse"></div>
                             <h3 className="text-lg font-bold uppercase tracking-widest text-gray-400">Active</h3>
                         </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 animate-fade-in">
                             {activeProjects.map(project => (
                                 <ProjectCard
                                     key={project.id}
@@ -133,7 +151,7 @@ export default function Dashboard() {
                                 <div className="h-2 w-2 rounded-full bg-green-500"></div>
                                 <h3 className="text-lg font-bold uppercase tracking-widest text-gray-400">Completed & Sold</h3>
                             </div>
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 opacity-80 hover:opacity-100 transition-opacity">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 opacity-60 grayscale-[0.5] hover:grayscale-0 transition-all animate-fade-in">
                                 {completedProjects.map(project => (
                                     <ProjectCard
                                         key={project.id}

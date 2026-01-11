@@ -36,3 +36,32 @@ button,
 a {
   cursor: pointer;
 }
+
+/* Performance and feel optimizations */
+.transition-all {
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 200ms;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.4s ease-out forwards;
+}
+
+/* Prevent image dragging to avoid jank */
+img {
+  user-select: none;
+  -webkit-user-drag: none;
+}

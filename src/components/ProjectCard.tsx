@@ -28,6 +28,7 @@ export default function ProjectCard({ project, expenses, onAddExpense }: Project
                     <img
                         src={project.image_path}
                         alt={project.name}
+                        loading="lazy"
                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                     />
                 ) : (
