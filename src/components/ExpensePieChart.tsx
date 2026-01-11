@@ -74,8 +74,8 @@ export default function ExpensePieChart({ expenses }: ExpensePieChartProps) {
                 {data.map((slice, i) => (
                     <div key={i} className="flex items-center gap-2 group">
                         <div className="w-2 h-2 rounded-full" style={{ backgroundColor: slice.color }} />
-                        <span className="text-[10px] font-bold text-gray-500 uppercase truncate max-w-[80px]">
-                            {slice.name} <span className="text-gray-400">({slice.percent}%)</span>
+                        <span className="text-[10px] font-bold text-gray-500 uppercase truncate max-w-[180px]">
+                            {slice.name} <span className="text-gray-400">({slice.percent}%) - {new Intl.NumberFormat('en-DE', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(slice.amount)}</span>
                         </span>
                     </div>
                 ))}
