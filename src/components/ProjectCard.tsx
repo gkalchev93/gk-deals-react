@@ -1,4 +1,4 @@
-import { Plus, BarChart3, FileText } from 'lucide-react';
+import { Plus, BarChart3, FileText, Clock, AlertTriangle, AlertCircle } from 'lucide-react';
 import type { Project, Expense } from '../types';
 import { useNavigate } from 'react-router-dom';
 
@@ -7,16 +7,46 @@ interface ProjectCardProps {
     expenses: Expense[];
     onAddExpense: (projectId: number) => void;
     onNotesClick: (project: Project) => void;
+    onRemindersClick: (project: Project) => void;
 }
 
-export default function ProjectCard({ project, expenses, onAddExpense, onNotesClick }: ProjectCardProps) {
+export default function ProjectCard({ project, expenses, onAddExpense, onNotesClick, onRemindersClick }: ProjectCardProps) {
     const navigate = useNavigate();
 
     // Calculate total spent (buy price + expenses)
     const totalSpent = (project.buy_price || 0) + expenses.reduce((sum, expense) => sum + (expense.amount || 0), 0);
 
     // Format currency (Euro)
+    // Format currency (Euro)
     const formattedTotal = new Intl.NumberFormat('en-DE', { style: 'currency', currency: 'EUR' }).format(totalSpent);
+
+    const getStatus = (dateStr?: string) => {
+        if (!dateStr) return 'none';
+        const date = new Date(dateStr);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        const oneMonthFromNow = new Date();
+        oneMonthFromNow.setMonth(oneMonthFromNow.getMonth() + 1);
+        oneMonthFromNow.setHours(0, 0, 0, 0);
+
+        if (date <= today) return 'expired';
+        if (date <= oneMonthFromNow) return 'warning';
+        return 'ok';
+    };
+
+    const reminderStatus = (() => {
+        if (project.type !== 'Car Rebuild') return 'none';
+        const statuses = [
+            project.insurance_date,
+            project.technical_check_date,
+            project.vinetka_date
+        ].map(getStatus);
+
+        if (statuses.includes('expired')) return 'expired';
+        if (statuses.includes('warning')) return 'warning';
+        return 'ok';
+    })();
 
     return (
         <div
@@ -51,6 +81,14 @@ export default function ProjectCard({ project, expenses, onAddExpense, onNotesCl
                     <div>
                         {project.status === 'completed' ? (
                             <>
+
+                                <span className="text-gray-500 text-[10px] uppercase font-bold tracking-wider block">Total Investment</span>
+                                <div className="flex items-baseline gap-2">
+                                    <span className="text-xl font-bold text-blue-400">
+                                        {new Intl.NumberFormat('en-DE', { style: 'currency', currency: 'EUR' }).format(totalSpent)}
+                                    </span>
+                                    <BarChart3 size={14} className="text-blue-900/40" />
+                                </div>
                                 <span className="text-green-500 text-[10px] uppercase font-bold tracking-wider block">Net Profit</span>
                                 <div className="flex items-baseline gap-2">
                                     <span className="text-xl font-bold text-green-400">
@@ -59,7 +97,7 @@ export default function ProjectCard({ project, expenses, onAddExpense, onNotesCl
                                     <BarChart3 size={14} className="text-green-900/40" />
                                 </div>
                                 {project.type === 'Car Rebuild' && project.odometer_end && project.odometer && project.odometer_end > project.odometer && (
-                                    <span className="text-[10px] text-gray-500 font-bold block mt-0.5">
+                                    <span className="text-[15px] text-gray-500 font-bold block mt-0.5">
                                         🏁 {project.odometer_end - project.odometer} KM DRIVEN
                                     </span>
                                 )}
@@ -83,6 +121,21 @@ export default function ProjectCard({ project, expenses, onAddExpense, onNotesCl
                         >
                             <FileText size={18} />
                         </button>
+
+                        {project.type === 'Car Rebuild' && project.status !== 'completed' && (
+                            <button
+                                onClick={() => onRemindersClick(project)}
+                                className={`p-2 rounded-lg transition-colors border border-gray-700/50 ${reminderStatus === 'expired' ? 'bg-red-500/10 text-red-500 hover:bg-red-500/20 shadow-[0_0_10px_rgba(239,68,68,0.3)] animate-pulse' :
+                                    reminderStatus === 'warning' ? 'bg-yellow-500/10 text-yellow-500 hover:bg-yellow-500/20' :
+                                        'bg-gray-800 hover:bg-gray-700 text-gray-400'
+                                    }`}
+                                title="Reminders"
+                            >
+                                {reminderStatus === 'expired' ? <AlertCircle size={18} /> :
+                                    reminderStatus === 'warning' ? <AlertTriangle size={18} /> :
+                                        <Clock size={18} />}
+                            </button>
+                        )}
 
                         <button
                             onClick={() => onAddExpense(project.id)}

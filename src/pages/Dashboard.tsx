@@ -4,6 +4,7 @@ import type { Project, Expense } from '../types';
 import ProjectCard from '../components/ProjectCard';
 import AddExpenseModal from '../components/AddExpenseModal';
 import ProjectNotesModal from '../components/ProjectNotesModal';
+import RemindersModal from '../components/RemindersModal';
 
 export default function Dashboard() {
     const [projects, setProjects] = useState<Project[]>([]);
@@ -11,6 +12,7 @@ export default function Dashboard() {
     const [loading, setLoading] = useState(true);
     const [expenseModalProject, setExpenseModalProject] = useState<{ id: number, name: string } | null>(null);
     const [notesModalProject, setNotesModalProject] = useState<Project | null>(null);
+    const [remindersModalProject, setRemindersModalProject] = useState<Project | null>(null);
 
     useEffect(() => {
         fetchData();
@@ -58,6 +60,10 @@ export default function Dashboard() {
         setNotesModalProject(project);
     };
 
+    const handleRemindersClick = (project: Project) => {
+        setRemindersModalProject(project);
+    };
+
     // Memoize the sorted projects and filtered lists
     const { activeProjects, completedProjects, totalPortfolioValue } = useMemo(() => {
         // Pre-calculate latest activity for each project for O(E + P log P) instead of O(P * E)
@@ -85,10 +91,11 @@ export default function Dashboard() {
 
         const active = sorted.filter(p => p.status !== 'completed');
         const completed = sorted.filter(p => p.status === 'completed');
+        const activeIds = active.map(p => p.id);
 
         // Total Portfolio = Sum of all Buy Prices + Sum of all Expenses
-        const totalBuyPrice = projects.reduce((sum, p) => sum + (p.buy_price || 0), 0);
-        const totalExpenseAmount = expenses.reduce((sum, e) => sum + e.amount, 0);
+        const totalBuyPrice = active.reduce((sum, p) => sum + (p.buy_price || 0), 0);
+        const totalExpenseAmount = expenses.filter(e => activeIds.includes(e.project_id)).reduce((sum, e) => sum + e.amount, 0);
         const totalValue = totalBuyPrice + totalExpenseAmount;
 
         return {
@@ -107,7 +114,7 @@ export default function Dashboard() {
                 </div>
                 <div className="flex gap-4">
                     <div className="bg-[#1a1a1a] flex-1 md:flex-none px-4 py-2 rounded-lg border border-gray-800">
-                        <span className="text-gray-500 text-xs block">Live Deals</span>
+                        <span className="text-gray-500 text-xs block">Live Projects</span>
                         <span className="font-bold text-xl text-blue-400">{activeProjects.length}</span>
                     </div>
                     <div className="bg-[#1a1a1a] flex-1 md:flex-none px-4 py-2 rounded-lg border border-gray-800">
@@ -141,6 +148,7 @@ export default function Dashboard() {
                                     expenses={expenses.filter(e => e.project_id === project.id)}
                                     onAddExpense={handleAddExpense}
                                     onNotesClick={handleNotesClick}
+                                    onRemindersClick={handleRemindersClick}
                                 />
                             ))}
                             {activeProjects.length === 0 && (
@@ -166,6 +174,7 @@ export default function Dashboard() {
                                         expenses={expenses.filter(e => e.project_id === project.id)}
                                         onAddExpense={handleAddExpense}
                                         onNotesClick={handleNotesClick}
+                                        onRemindersClick={handleRemindersClick}
                                     />
                                 ))}
                             </div>
@@ -191,6 +200,17 @@ export default function Dashboard() {
                             projectName={notesModalProject.name}
                             initialNotes={notesModalProject.notes || ''}
                             onClose={() => setNotesModalProject(null)}
+                            onSaved={() => {
+                                fetchData();
+                            }}
+                        />
+                    )}
+
+                    {remindersModalProject && (
+                        <RemindersModal
+                            isOpen={!!remindersModalProject}
+                            project={remindersModalProject}
+                            onClose={() => setRemindersModalProject(null)}
                             onSaved={() => {
                                 fetchData();
                             }}

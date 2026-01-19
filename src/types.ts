@@ -13,6 +13,9 @@ export interface Project {
     odometer_end?: number;
     vin?: string;
     notes?: string;
+    insurance_date?: string;
+    technical_check_date?: string;
+    vinetka_date?: string;
 }
 
 export interface Expense {
