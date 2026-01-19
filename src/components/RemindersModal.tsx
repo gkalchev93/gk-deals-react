@@ -10,6 +10,25 @@ interface RemindersModalProps {
     onSaved: () => void;
 }
 
+function formatDateForInput(isoDate: string) {
+    if (!isoDate) return '';
+    const [y, m, d] = isoDate.split('-');
+    return `${d}.${m}.${y}`;
+}
+
+function parseInputDate(input: string) {
+    if (!input) return null;
+    // expect dd.mm.yyyy
+    const parts = input.split('.');
+    if (parts.length !== 3) return null;
+    const [d, m, y] = parts;
+    if (d.length !== 2 || m.length !== 2 || y.length !== 4) return null;
+    const iso = `${y}-${m}-${d}`;
+    const date = new Date(iso);
+    if (isNaN(date.getTime())) return null;
+    return iso;
+}
+
 export default function RemindersModal({
     isOpen,
     project,
@@ -83,22 +102,53 @@ export default function RemindersModal({
         value: string,
         onChange: (val: string) => void
     }) => {
+        const [textValue, setTextValue] = useState(formatDateForInput(value));
+        const [error, setError] = useState(false);
+
+        // Sync local text when parent value changes (e.g. initially)
+        useEffect(() => {
+            setTextValue(formatDateForInput(value));
+        }, [value]);
+
+        const handleBlur = () => {
+            if (!textValue) {
+                onChange('');
+                setError(false);
+                return;
+            }
+
+            const iso = parseInputDate(textValue);
+            if (iso) {
+                onChange(iso);
+                setError(false);
+            } else {
+                setError(true);
+                // Optionally don't clear the text so user can fix it
+            }
+        };
+
         const status = getStatus(value);
 
         return (
-            <div className="bg-[#111] p-4 rounded-xl border border-gray-800 hover:border-gray-700 transition-colors">
+            <div className={`bg-[#111] p-4 rounded-xl border transition-colors ${error ? 'border-red-500/50' : 'border-gray-800 hover:border-gray-700'}`}>
                 <div className="flex justify-between items-center mb-2">
                     <label className="text-sm font-bold text-gray-400 uppercase tracking-wider">{label}</label>
                     <StatusIcon status={status} />
                 </div>
                 <input
-                    type="date"
-                    value={value}
-                    onChange={(e) => onChange(e.target.value)}
-                    className="w-full bg-gray-900 border border-gray-700 rounded-lg p-2 text-white focus:border-blue-500 focus:outline-none"
+                    type="text"
+                    placeholder="DD.MM.YYYY"
+                    value={textValue}
+                    onChange={(e) => {
+                        setTextValue(e.target.value);
+                        setError(false);
+                    }}
+                    onBlur={handleBlur}
+                    className={`w-full bg-gray-900 border rounded-lg p-2 text-white focus:outline-none focus:ring-2 transition-all ${error ? 'border-red-500 focus:ring-red-500/20' : 'border-gray-700 focus:border-purple-500 focus:ring-purple-500/20'}`}
                 />
-                {status === 'expired' && <p className="text-red-500 text-xs mt-2 font-bold">Expired / Due Today!</p>}
-                {status === 'warning' && <p className="text-yellow-500 text-xs mt-2 font-bold">Due within 1 month</p>}
+                {error && <p className="text-red-500 text-xs mt-2 font-bold">Invalid format (DD.MM.YYYY)</p>}
+                {!error && status === 'expired' && <p className="text-red-500 text-xs mt-2 font-bold">Expired / Due Today!</p>}
+                {!error && status === 'warning' && <p className="text-yellow-500 text-xs mt-2 font-bold">Due within 1 month</p>}
             </div>
         );
     };

@@ -123,18 +123,48 @@ export default function ProjectCard({ project, expenses, onAddExpense, onNotesCl
                         </button>
 
                         {project.type === 'Car Rebuild' && project.status !== 'completed' && (
-                            <button
-                                onClick={() => onRemindersClick(project)}
-                                className={`p-2 rounded-lg transition-colors border border-gray-700/50 ${reminderStatus === 'expired' ? 'bg-red-500/10 text-red-500 hover:bg-red-500/20 shadow-[0_0_10px_rgba(239,68,68,0.3)] animate-pulse' :
-                                    reminderStatus === 'warning' ? 'bg-yellow-500/10 text-yellow-500 hover:bg-yellow-500/20' :
-                                        'bg-gray-800 hover:bg-gray-700 text-gray-400'
-                                    }`}
-                                title="Reminders"
-                            >
-                                {reminderStatus === 'expired' ? <AlertCircle size={18} /> :
-                                    reminderStatus === 'warning' ? <AlertTriangle size={18} /> :
-                                        <Clock size={18} />}
-                            </button>
+                            <div className="relative group/tooltip">
+                                <button
+                                    onClick={() => onRemindersClick(project)}
+                                    className={`p-2 rounded-lg transition-colors border border-gray-700/50 ${reminderStatus === 'expired' ? 'bg-red-500/10 text-red-500 hover:bg-red-500/20 shadow-[0_0_10px_rgba(239,68,68,0.3)] animate-pulse' :
+                                        reminderStatus === 'warning' ? 'bg-yellow-500/10 text-yellow-500 hover:bg-yellow-500/20' :
+                                            'bg-gray-800 hover:bg-gray-700 text-gray-400'
+                                        }`}
+                                    title="Reminders"
+                                >
+                                    {reminderStatus === 'expired' ? <AlertCircle size={18} /> :
+                                        reminderStatus === 'warning' ? <AlertTriangle size={18} /> :
+                                            <Clock size={18} />}
+                                </button>
+
+                                <div className="absolute bottom-full right-0 mb-2 w-64 bg-[#1a1a1a] border border-gray-700 rounded-xl p-4 shadow-2xl opacity-0 invisible group-hover/tooltip:opacity-100 group-hover/tooltip:visible transition-all z-20 pointer-events-none">
+                                    <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3 pb-2 border-b border-gray-800">Reminders Overview</h4>
+                                    <div className="space-y-2">
+                                        {[
+                                            { label: 'Insurance', date: project.insurance_date },
+                                            { label: 'Tech Check', date: project.technical_check_date },
+                                            { label: 'Vinetka', date: project.vinetka_date }
+                                        ].map((item, i) => {
+                                            const status = getStatus(item.date);
+                                            return (
+                                                <div key={i} className="flex justify-between items-center text-xs">
+                                                    <span className="text-gray-400">{item.label}</span>
+                                                    <div className="flex items-center gap-2">
+                                                        <span className={`font-mono font-bold ${status === 'expired' ? 'text-red-500' :
+                                                            status === 'warning' ? 'text-yellow-500' :
+                                                                'text-white'
+                                                            }`}>
+                                                            {item.date ? new Date(item.date).toLocaleDateString('de-DE') : '-'}
+                                                        </span>
+                                                        {status === 'expired' && <AlertCircle size={12} className="text-red-500" />}
+                                                        {status === 'warning' && <AlertTriangle size={12} className="text-yellow-500" />}
+                                                    </div>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+                            </div>
                         )}
 
                         <button
