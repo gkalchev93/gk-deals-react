@@ -8,6 +8,7 @@ import EditExpenseModal from '../components/EditExpenseModal';
 import ExpensePieChart from '../components/ExpensePieChart';
 import ProjectNotesModal from '../components/ProjectNotesModal';
 import RemindersModal from '../components/RemindersModal';
+import LicensePlate from '../components/LicensePlate';
 
 export default function ProjectDetails() {
     const { id } = useParams<{ id: string }>();
@@ -152,25 +153,33 @@ export default function ProjectDetails() {
                                 <div className="min-w-0 flex-1">
                                     <h1 className="text-2xl sm:text-4xl font-bold mb-2">{project.name}</h1>
 
-                                    {project.type === 'Car Rebuild' && project.vin && (
-                                        <div className="flex items-center gap-2 mb-6">
-                                            <div className="flex items-center gap-3 text-gray-300 bg-gray-800 px-4 py-2 rounded-xl border border-gray-700 font-mono shadow-inner overflow-x-auto whitespace-nowrap">
-                                                <Hash size={18} className="text-blue-400" />
-                                                <span className="text-base font-bold tracking-widest">
-                                                    {project.vin}
-                                                </span>
-                                            </div>
-                                            <button
-                                                onClick={() => {
-                                                    navigator.clipboard.writeText(project.vin || '');
-                                                    setCopiedVin(true);
-                                                    setTimeout(() => setCopiedVin(false), 2000);
-                                                }}
-                                                className="p-2 hover:bg-gray-800 rounded-xl transition-colors text-gray-500 hover:text-blue-400 border border-transparent hover:border-gray-700"
-                                                title="Copy VIN"
-                                            >
-                                                {copiedVin ? <Check size={20} className="text-green-500" /> : <Copy size={20} />}
-                                            </button>
+                                    {project.type === 'Car Rebuild' && (
+                                        <div className="flex flex-wrap items-center gap-4 mb-6">
+                                            {project.vin && (
+                                                <div className="flex items-center gap-2">
+                                                    <div className="flex items-center gap-3 text-gray-300 bg-gray-800 px-4 py-2 rounded-xl border border-gray-700 font-mono shadow-inner overflow-x-auto whitespace-nowrap">
+                                                        <Hash size={18} className="text-blue-400" />
+                                                        <span className="text-base font-bold tracking-widest">
+                                                            {project.vin}
+                                                        </span>
+                                                    </div>
+                                                    <button
+                                                        onClick={() => {
+                                                            navigator.clipboard.writeText(project.vin || '');
+                                                            setCopiedVin(true);
+                                                            setTimeout(() => setCopiedVin(false), 2000);
+                                                        }}
+                                                        className="p-2 hover:bg-gray-800 rounded-xl transition-colors text-gray-500 hover:text-blue-400 border border-transparent hover:border-gray-700"
+                                                        title="Copy VIN"
+                                                    >
+                                                        {copiedVin ? <Check size={20} className="text-green-500" /> : <Copy size={20} />}
+                                                    </button>
+                                                </div>
+                                            )}
+
+                                            {project.license_plate && (
+                                                <LicensePlate text={project.license_plate} size="lg" />
+                                            )}
                                         </div>
                                     )}
                                     {project.type === 'Car Rebuild' && project.odometer !== undefined && (
@@ -376,13 +385,13 @@ export default function ProjectDetails() {
                                     const status = getStatus(item.date);
                                     return (
                                         <div key={i} className={`p-3 rounded-xl border flex justify-between items-center ${status === 'expired' ? 'bg-red-500/10 border-red-500/30' :
-                                                status === 'warning' ? 'bg-yellow-500/10 border-yellow-500/30' :
-                                                    'bg-[#111] border-gray-800'
+                                            status === 'warning' ? 'bg-yellow-500/10 border-yellow-500/30' :
+                                                'bg-[#111] border-gray-800'
                                             }`}>
                                             <div>
                                                 <span className={`text-xs uppercase font-bold block mb-1 ${status === 'expired' ? 'text-red-400' :
-                                                        status === 'warning' ? 'text-yellow-400' :
-                                                            'text-gray-500'
+                                                    status === 'warning' ? 'text-yellow-400' :
+                                                        'text-gray-500'
                                                     }`}>{item.label}</span>
                                                 <span className="text-sm font-bold text-white">
                                                     {item.date ? new Date(item.date).toLocaleDateString() : 'Not Set'}

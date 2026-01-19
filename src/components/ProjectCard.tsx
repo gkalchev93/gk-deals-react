@@ -1,6 +1,7 @@
 import { Plus, BarChart3, FileText, Clock, AlertTriangle, AlertCircle } from 'lucide-react';
 import type { Project, Expense } from '../types';
 import { useNavigate } from 'react-router-dom';
+import LicensePlate from './LicensePlate';
 
 interface ProjectCardProps {
     project: Project;
@@ -71,6 +72,12 @@ export default function ProjectCard({ project, expenses, onAddExpense, onNotesCl
                 <div className="absolute top-2 right-2 bg-black/60 backdrop-blur-md px-2 py-1 rounded-md text-xs font-medium border border-white/10">
                     {project.type}
                 </div>
+
+                {project.type === 'Car Rebuild' && project.license_plate && (
+                    <div className="absolute top-2 left-2 scale-90 origin-top-left shadow-lg">
+                        <LicensePlate text={project.license_plate} size="sm" />
+                    </div>
+                )}
             </div>
 
             {/* Content */}

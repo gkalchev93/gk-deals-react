@@ -16,6 +16,7 @@ export default function CreateProjectModal({ isOpen, onClose, onCreated }: Creat
     const [odometer, setOdometer] = useState('0');
     const [odometerEnd, setOdometerEnd] = useState('0');
     const [vin, setVin] = useState('');
+    const [licensePlate, setLicensePlate] = useState('');
     const [soldPrice, setSoldPrice] = useState('0');
     const [image, setImage] = useState<File | null>(null);
     const [loading, setLoading] = useState(false);
@@ -69,6 +70,7 @@ export default function CreateProjectModal({ isOpen, onClose, onCreated }: Creat
                         odometer: type === 'Car Rebuild' ? (parseInt(odometer) || 0) : 0,
                         odometer_end: type === 'Car Rebuild' && status === 'completed' ? (parseInt(odometerEnd) || 0) : 0,
                         vin: type === 'Car Rebuild' ? vin : '',
+                        license_plate: type === 'Car Rebuild' ? licensePlate : '',
                         sold_price: parseFloat(soldPrice) || 0
                     }
                 ]);
@@ -79,6 +81,7 @@ export default function CreateProjectModal({ isOpen, onClose, onCreated }: Creat
             onClose();
             // Reset form
             setName('');
+            setLicensePlate('');
             setImage(null);
 
         } catch (error) {
@@ -158,6 +161,19 @@ export default function CreateProjectModal({ isOpen, onClose, onCreated }: Creat
                                 onChange={(e) => setVin(e.target.value.toUpperCase())}
                                 className="w-full bg-[#111] border border-gray-700 rounded-lg p-2.5 text-white focus:border-blue-500 focus:outline-none font-mono"
                                 placeholder="Vehicle Identification Number..."
+                            />
+                        </div>
+                    )}
+
+                    {type === 'Car Rebuild' && (
+                        <div>
+                            <label className="block text-xs uppercase text-gray-500 font-semibold mb-1">License Plate</label>
+                            <input
+                                type="text"
+                                value={licensePlate}
+                                onChange={(e) => setLicensePlate(e.target.value.toUpperCase())}
+                                className="w-full bg-[#111] border border-gray-700 rounded-lg p-2.5 text-white focus:border-blue-500 focus:outline-none font-mono uppercase"
+                                placeholder="e.g. CA 1234 XY"
                             />
                         </div>
                     )}

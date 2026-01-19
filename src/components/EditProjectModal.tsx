@@ -18,6 +18,7 @@ export default function EditProjectModal({ isOpen, project, onClose, onUpdated }
     const [odometer, setOdometer] = useState(String(project.odometer || 0));
     const [odometerEnd, setOdometerEnd] = useState(String(project.odometer_end || 0));
     const [vin, setVin] = useState(project.vin || '');
+    const [licensePlate, setLicensePlate] = useState(project.license_plate || '');
     const [soldPrice, setSoldPrice] = useState(String(project.sold_price || 0));
     const [image, setImage] = useState<File | null>(null);
     const [loading, setLoading] = useState(false);
@@ -31,6 +32,7 @@ export default function EditProjectModal({ isOpen, project, onClose, onUpdated }
             setOdometer(String(project.odometer || 0));
             setOdometerEnd(String(project.odometer_end || 0));
             setVin(project.vin || '');
+            setLicensePlate(project.license_plate || '');
             setSoldPrice(String(project.sold_price || 0));
             setStatus(project.status || 'active');
         }
@@ -92,6 +94,7 @@ export default function EditProjectModal({ isOpen, project, onClose, onUpdated }
                     odometer: type === 'Car Rebuild' ? (parseInt(odometer) || 0) : 0,
                     odometer_end: type === 'Car Rebuild' && status === 'completed' ? (parseInt(odometerEnd) || 0) : 0,
                     vin: type === 'Car Rebuild' ? vin : '',
+                    license_plate: type === 'Car Rebuild' ? licensePlate : '',
                     sold_price: parseFloat(soldPrice) || 0
                 })
                 .eq('id', project.id);
@@ -181,6 +184,18 @@ export default function EditProjectModal({ isOpen, project, onClose, onUpdated }
                                 />
                             </div>
                         )}
+                        {type === 'Car Rebuild' && (
+                            <div>
+                                <label className="block text-xs uppercase text-gray-500 font-semibold mb-1">License Plate</label>
+                                <input
+                                    type="text"
+                                    value={licensePlate}
+                                    onChange={(e) => setLicensePlate(e.target.value.toUpperCase())}
+                                    className="w-full bg-[#111] border border-gray-700 rounded-lg p-2.5 text-white focus:border-blue-500 focus:outline-none font-mono uppercase"
+                                    placeholder="e.g. CA 1234 XY"
+                                />
+                            </div>
+                        )}
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
@@ -251,7 +266,7 @@ export default function EditProjectModal({ isOpen, project, onClose, onUpdated }
                         </button>
                     </div>
                 </form>
-            </div>
-        </div>
+            </div >
+        </div >
     );
 }

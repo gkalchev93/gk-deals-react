@@ -16,6 +16,7 @@ export interface Project {
     insurance_date?: string;
     technical_check_date?: string;
     vinetka_date?: string;
+    license_plate?: string;
 }
 
 export interface Expense {
