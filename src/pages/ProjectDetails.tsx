@@ -314,54 +314,7 @@ export default function ProjectDetails() {
 
                 {/* Reminders Section */}
                 {project.type === 'Car Rebuild' && (
-                    <div className="lg:col-span-1 space-y-6 order-2 lg:order-2 mt-6 lg:mt-0">
-                        <div className="bg-[#1a1a1a] rounded-2xl border border-gray-800 p-6 shadow-2xl">
-                            <div className="flex justify-between items-center mb-4">
-                                <h3 className="text-lg font-bold flex items-center gap-2">
-                                    <Clock size={20} className="text-purple-400" />
-                                    Reminders
-                                </h3>
-                                <button
-                                    onClick={() => setIsRemindersOpen(true)}
-                                    className="p-2 hover:bg-gray-800 rounded-lg text-gray-500 hover:text-purple-400 transition-colors"
-                                >
-                                    <Edit2 size={16} />
-                                </button>
-                            </div>
-
-                            <div className="space-y-3">
-                                {[
-                                    { label: 'Insurance', date: project.insurance_date },
-                                    { label: 'Technical Check', date: project.technical_check_date },
-                                    { label: 'Vinetka', date: project.vinetka_date }
-                                ].map((item, i) => {
-                                    const status = getStatus(item.date);
-                                    return (
-                                        <div key={i} className={`p-3 rounded-xl border flex justify-between items-center ${status === 'expired' ? 'bg-red-500/10 border-red-500/30' :
-                                            status === 'warning' ? 'bg-yellow-500/10 border-yellow-500/30' :
-                                                'bg-[#111] border-gray-800'
-                                            }`}>
-                                            <div>
-                                                <span className={`text-xs uppercase font-bold block mb-1 ${status === 'expired' ? 'text-red-400' :
-                                                    status === 'warning' ? 'text-yellow-400' :
-                                                        'text-gray-500'
-                                                    }`}>{item.label}</span>
-                                                <span className="text-sm font-bold text-white">
-                                                    {item.date ? new Date(item.date).toLocaleDateString() : 'Not Set'}
-                                                </span>
-                                            </div>
-                                            <StatusIcon status={status} />
-                                        </div>
-                                    );
-                                })}
-                            </div>
-                        </div>
-                    </div>
-                )}
-
-                {/* Reminders Section */}
-                {project.type === 'Car Rebuild' && (
-                    <div className="lg:col-span-1 space-y-6 order-2 lg:order-2 mt-6 lg:mt-0">
+                    <div className="lg:col-span-2 space-y-6 order-2 lg:order-2 mt-6 lg:mt-0">
                         <div className="bg-[#1a1a1a] rounded-2xl border border-gray-800 p-6 shadow-2xl">
                             <div className="flex justify-between items-center mb-4">
                                 <h3 className="text-lg font-bold flex items-center gap-2">
